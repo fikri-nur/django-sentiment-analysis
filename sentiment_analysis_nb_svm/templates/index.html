@@ -1,39 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-    </head>
-    <body>
-        <ul>
-            {% if user.is_authenticated %}
-            <li>
-                <form action="{% url 'logout' %}" method="post"
-                    style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" name="logout" value="Submit"
-                        style="background: none; border: none; color: blue; cursor: pointer;">Logout</button>
-                </form>
-            </li>
-            {% else %}
-            <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="{% url 'register' %}">Register</a></li>
-            {% endif %}
-        </ul>
+{% extends 'base.html' %}
+{% load static %}
+{% comment %} {% block title %}Dashboard Admin{% endblock %} {% endcomment %}
 
-        {% if messages %}
-        {% for message in messages %}
-        <div
-            class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'info' %}alert-primary{% elif message.tags == 'error' %}alert-danger{% elif message.tags == 'warning' %}alert-warning{% endif %} alert-dismissible fade show"
-            role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                aria-label="Close"></button>
+{% block content %}
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        {% comment %} {% for key, value in countEverySentiment.items %}
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-4 col-md-4 mb-4">
+                {% if key == 'positif' %}
+                    {% set color = 'primary' %}
+                {% elif key == 'negatif' %}
+                    {% set color = 'danger' %}
+                {% else %}
+                    {% set color = 'warning' %}
+                {% endif %}
+                <div class="card border-left-{{ color }} shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-{{ color }} text-uppercase mb-1">
+                                    {{ key }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ value }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-solid fa-comment fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %} {% endcomment %}
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Bar Chart -->
+        {% comment %} <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Jumlah Sentimen</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    {% if not countEverySentiment %}
+                        <div class="alert alert-warning" role="alert">
+                            Tidak ada data yang tersedia.
+                        </div>
+                    {% else %}
+                        <div class="chart-bar">
+                            <div class="m-0 font-weight-bold text-secondary">Total Data: <span id="totalData"></span></div>
+                            <canvas id="myBarChart"></canvas>
+                            <div id="chartData" data-sentiment="{{ countEverySentiment|json_script:'countEverySentiment' }}"></div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div> {% endcomment %}
+
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Word Cloud</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    {% if countEverySentiment %}
+                        <div class="alert alert-warning" role="alert">
+                            Tidak ada data yang tersedia.
+                        </div>
+                    {% else %}
+                        <div class="">
+                            <img src="{% static 'img/wordcloud-dummy.jpg' %}" alt="Word Cloud" class="img-fluid">
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        {% endfor %}
-        {% endif %}
+    </div>
+{% endblock %}
 
-        <h1>Welcome {{ user }}</h1>
-    </body>
-</html>
+{% block scripts %}
+    <script src="{% static 'js/chart/dashboard-chartbar.js' %}"></script>
+{% endblock %}

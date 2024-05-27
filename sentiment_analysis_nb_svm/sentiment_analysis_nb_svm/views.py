@@ -5,10 +5,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from . import forms
 
-
 def index(request):
-    return render(request, "index.html")
-
+    if request.user.is_authenticated:
+        return render(request, "index.html")
+    else:
+        return redirect("login")
 
 def loginView(request):
     context = {}
@@ -35,15 +36,13 @@ def loginView(request):
             context["form"] = form
             return render(request, "auth/login.html", context)
 
-
 @login_required
 def logoutView(request):
     if request.method == "POST":
         if "logout" in request.POST and request.POST["logout"] == "Submit":
             logout(request)
-            messages.success(request, "You have been logged out successfully.")
-            return redirect("index")
-    return redirect("index")
+            return redirect("login")
+    return redirect("login")
 
 
 def register(request):
