@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <ul>
+            {% if user.is_authenticated %}
+            <li>
+                <form action="{% url 'logout' %}" method="post"
+                    style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" name="logout" value="Submit"
+                        style="background: none; border: none; color: blue; cursor: pointer;">Logout</button>
+                </form>
+            </li>
+            {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
+            {% endif %}
+        </ul>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div
+            class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'info' %}alert-primary{% elif message.tags == 'error' %}alert-danger{% elif message.tags == 'warning' %}alert-warning{% endif %} alert-dismissible fade show"
+            role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <h1>Welcome {{ user }}</h1>
+    </body>
+</html>
