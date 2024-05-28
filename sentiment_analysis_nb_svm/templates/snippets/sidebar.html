@@ -27,13 +27,13 @@
         Menu
     </div>
 
-    {% comment %} <!-- Nav Item -->
+    <!-- Nav Item -->
     <li class="nav-item {% if request.resolver_match.url_name == 'datasets_index' %}active{% endif %}">
-        <a class="nav-link" href="{% url 'datasets_index' %}">
+        <a class="nav-link" href="{% url 'dataset:index' %}">
             <i class="fas fa-fw fa-solid fa-database"></i>
             <span>Data Tweet</span></a>
     </li>
-
+    {% comment %} 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item {% if request.resolver_match.url_name|slice:0:13 == 'preprocessings' %}active{% endif %}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"

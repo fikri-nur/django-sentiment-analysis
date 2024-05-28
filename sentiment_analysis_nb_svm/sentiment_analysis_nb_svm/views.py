@@ -4,10 +4,33 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from . import forms
+from dataset.models import Dataset
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, "index.html")
+        # countevery label
+        positif = Dataset.objects.filter(label="positif").count()
+        negatif = Dataset.objects.filter(label="negatif").count()
+        netral = Dataset.objects.filter(label="netral").count()
+        
+        countEverySentiment = {
+            "Positif": positif,
+            "Negatif": negatif,
+            "Netral": netral
+        }
+
+        context = {
+            "title": "Dashboard",
+            "countEveryLabel": [
+                ["Positif", positif, "success"],
+                ["Negatif", negatif, "danger"],
+                ["Netral", netral, "primary"],
+            ],
+            "countEverySentiment": countEverySentiment,
+            "total": positif + negatif + netral,
+        }
+        
+        return render(request, "index.html", context)
     else:
         return redirect("login")
 
