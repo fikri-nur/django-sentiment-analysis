@@ -3,82 +3,135 @@
 {% comment %} {% block title %}Dashboard Admin{% endblock %} {% endcomment %}
 
 {% block content %}
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-    </div>
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+</div>
 
-    <!-- Content Row -->
-    <div class="row">
-        {% for label, count, color in countEveryLabel %}
-            <div class="col-xl-4 col-md-4 mb-4">
-                <div class="card border-left-{{ color }} shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-{{ color }} text-uppercase mb-1">
-                                    {{ label }}</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ count }}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-solid fa-comment fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
+<!-- Content Row -->
+<div class="row">
+    {% for label, count, color in countEveryLabel %}
+    <div class="col-xl-4 col-md-4 mb-4">
+        <div class="card border-left-{{ color }} shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div
+                            class="text-xs font-weight-bold text-{{ color }} text-uppercase mb-1">
+                            {{ label }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ count }}</div>
                     </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-
-    <!-- Content Row -->
-    <div class="row">
-        <!-- Bar Chart -->
-        {% comment %} <div class="col-xl-12 col-lg-12">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Jumlah Sentimen</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    {% if not countEverySentiment %}
-                        <div class="alert alert-warning" role="alert">
-                            Tidak ada data yang tersedia.
-                        </div>
-                    {% else %}
-                        <div class="chart-bar">
-                            <div class="m-0 font-weight-bold text-secondary">Total Data: <span id="totalData"></span></div>
-                            <canvas id="myBarChart"></canvas>
-                            <div id="chartData" data-sentiment="{{ countEverySentiment|json_script:'countEverySentiment' }}"></div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div> {% endcomment %}
-
-        <div class="col-xl-12 col-lg-12">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Word Cloud</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    {% if not countEveryLabel %}
-                        <div class="alert alert-warning" role="alert">
-                            Tidak ada data yang tersedia.
-                        </div>
-                    {% else %}
-                        <div class="">
-                            <img src="{% static 'img/wordcloud-dummy.jpg' %}" alt="Word Cloud" class="img-fluid">
-                        </div>
-                    {% endif %}
+                    <div class="col-auto">
+                        <i
+                            class="fas fa-solid fa-comment fa-2x text-gray-300"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    {% endfor %}
+</div>
+
+<!-- Content Row -->
+<div class="row">
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Jumlah
+                    Sentimen (Total Data: <span id="totalData"></span>)</h6>
+            </div>
+            <div class="card-body">
+                {% if total == 0 %}
+                    <div class="alert alert-warning" role="alert">
+                    Tidak ada data yang tersedia.
+                    </div>
+                {% else %}
+                    <canvas id="myBarChart"></canvas>
+                    <div id="chartData" data-sentiment="{{ countEverySentiment_json }}"></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Word Cloud Positif -->
+    {% if check_wordcloud %}
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Word Cloud</h6>
+                    <a href="{% url 'generate_wordcloud' %}"
+                        class="btn btn-primary">Generate Word Cloud</a>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
+    {% else %}
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Word Cloud - Positif</h6>
+            </div>
+            <!-- Card Body -->
+                <div class="card-body">
+                    <img src="{% static positive_wordcloud_url %}"
+                                    alt="Positive Word Cloud"
+                                    class="img-fluid mx-auto d-block"
+                                    style="max-width: 100%; margin-bottom: 20px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Word Cloud - Negatif</h6>
+            </div>
+            <!-- Card Body -->
+                <div class="card-body">
+                    <img src="{% static negative_wordcloud_url %}"
+                                alt="Negative Word Cloud"
+                                class="img-fluid mx-auto d-block"
+                                style="max-width: 100%; margin-bottom: 20px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Word Cloud - Netral</h6>
+            </div>
+            <!-- Card Body -->
+                <div class="card-body">
+                    <img src="{% static neutral_wordcloud_url %}"
+                                alt="Neutral Word Cloud"
+                                class="img-fluid mx-auto d-block"
+                                style="max-width: 100%; margin-bottom: 20px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    
+</div>
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'js/chart/dashboard-chartbar.js' %}"></script>
+<script>
+
+
+</script>
+<script src="{% static 'js/chart/dashboard-chartbar.js' %}"></script>
 {% endblock %}

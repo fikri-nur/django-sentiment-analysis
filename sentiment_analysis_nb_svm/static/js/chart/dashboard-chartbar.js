@@ -7,7 +7,7 @@ var totalData = Object.values(countEverySentiment).reduce((a, b) => a + b, 0);
 document.getElementById('totalData').textContent = totalData;
 
 // Bar Chart Example
-var ctx = document.getElementById("myBarChart");
+var ctx = document.getElementById("myBarChart").getContext('2d');
 var myBarChart = new Chart(ctx, {
     type: 'bar',
     data: {

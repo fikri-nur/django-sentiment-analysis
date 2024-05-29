@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+<style>
+    .custom-table {
+        color: #333;
+        border-color: #ddd;
+    }
+
+    .custom-table td {
+        max-width: 200px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Stemming Data</h6>
+        <div class="text-right">
+            <a href="{% url 'preprocessing:normalization_view' %}" class="btn btn-primary">
+                <i class="fas fa-fw fa-solid fa-angle-left"></i>
+            </a>
+            {% if countBefore == 0 and countAfter != 0 %}
+            <a href="{% url 'preprocessing:process_stemming' %}" class="btn btn-success">
+                <i class="fas fa-fw fa-solid fa-spinner"></i> Stemming
+            </a>
+            {% endif %}
+            {% comment %} <a href="{% url 'preprocessing:next_step_view' %}" class="btn btn-primary">
+                <i class="fas fa-fw fa-solid fa-angle-right"></i>
+            </a> {% endcomment %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered custom-table" id="stemming-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Stopwords Removed</th>
+                        <th>Stemmed</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Stopwords Removed</th>
+                        <th>Stemmed</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% if countBefore == 0 and countAfter == 0 %}
+                    {% for preprocessing in preprocessings %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ preprocessing.stopwords_removed_text }}</td>
+                        <td>{{ preprocessing.stemmed_text|default:"Unprocessed" }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center">No data available</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<script>
+    $(document).ready(function() {
+        $('#stemming-table').DataTable();
+    });
+</script>
+{% endblock %}
