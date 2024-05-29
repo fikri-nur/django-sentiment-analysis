@@ -293,21 +293,3 @@ def train_and_evaluate_svm(request):
     }
 
     return render(request, "svm/index.html", context)
-
-
-def predict_sentiment(request):
-    prediction = None
-
-    if request.method == "POST":
-        input_text = request.POST.get("input_text")
-        latest_evaluation = Evaluation.objects.latest("created_at")
-
-        if latest_evaluation:
-            model = joblib.load(latest_evaluation.model_path)
-            vectorizer = joblib.load(latest_evaluation.vectorizer_path)
-
-            input_tfidf = vectorizer.transform([input_text]).toarray()
-            prediction = model.predict(input_tfidf)[0]
-            prediction = "Positif" if prediction == 1 else "Negatif"
-
-    return render(request, "naivebayes/index.html", {"prediction": prediction})

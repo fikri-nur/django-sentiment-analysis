@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Prediksi Sentimen</h6>
+        </div>
+        <div class="card-body">
+            <h6 class="mt-2">Predict Sentiment</h6>
+            <form method="post" action="{% url 'pengujian:predict_sentiment_view' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="modelSelect">Select Model:</label>
+                    <select class="form-control" id="modelSelect" name="model_id" required>
+                        <option value="" selected disabled>Select a model</option>
+                        {% for evaluation in evaluations %}
+                            <option value="{{ evaluation.id }}">{{ evaluation.metode }} - {{ evaluation.created_at }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-group">
+                        <label for="inputText">Input Text:</label>
+                        <textarea class="form-control" id="inputText" name="input_text" rows="3" required></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Prediksi</button>
+            </form>        
+            {% if prediction %}
+            <hr>
+            <h6 class="mt-4">Prediction Result</h6>
+            <p>Sentiment: <strong>{{ prediction }}</strong></p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

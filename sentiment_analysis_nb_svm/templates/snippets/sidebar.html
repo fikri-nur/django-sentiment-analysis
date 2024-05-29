@@ -93,10 +93,20 @@
             <span>Evaluasi</span></a>
     </li>
 
+    <!-- Nav Item - Dropdown -->
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'prediksi:index_view' %}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDropdown"
+            aria-expanded="true" aria-controls="collapseDropdown">
             <i class="fas fa-fw fa-solid fa-magnifying-glass"></i>
-            <span>Prediksi Sentimen</span></a>
+            <span>Pengujian</span>
+        </a>
+        <div id="collapseDropdown" class="collapse" aria-labelledby="headingDropdown" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Menu:</h6>
+                <a class="collapse-item" href="{% url 'pengujian:analisisTweet_view' %}">Analisis Data Tweet</a>
+                <a class="collapse-item" href="{% url 'pengujian:index_view' %}">Prediksi Sentimen</a>
+            </div>
+        </div>
     </li>
 
     <!-- Divider -->
