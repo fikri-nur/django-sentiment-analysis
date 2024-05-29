@@ -1,18 +1,19 @@
-<!-- templates/data/index.html -->
 {% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
-<div class="card shadow mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Split Data</h6>
+    <div class="card shadow mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Bagi Data Latih dan Data Uji</h6>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Split Data</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="card-body">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Split Data</button>
-        </form>
-    </div>
-</div>
 {% endblock %}

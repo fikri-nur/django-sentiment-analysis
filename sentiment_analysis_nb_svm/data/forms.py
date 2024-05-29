@@ -3,10 +3,10 @@ from django import forms
 
 
 class SplitDataForm(forms.Form):
-    test_size = forms.FloatField(
+    test_size = forms.ChoiceField(
         label="Persentase Data Uji",
-        min_value=0.0,
-        max_value=1.0,
-        initial=0.2,
-        help_text="Masukkan nilai antara 0 dan 1",
+        choices=[(str(i/10), str(i/10)) for i in range(1, 10)],
+        initial='0.2',
+        help_text="Pilih nilai antara 0 dan 1 dengan kelipatan 0.1",
+        widget=forms.Select(attrs={'class': 'form-control'})
     )
