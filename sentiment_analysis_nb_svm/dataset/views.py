@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 import pandas as pd
-from .models import Dataset
 from .forms import UploadFileForm
 from django.contrib.auth.decorators import login_required
+
+from .models import Dataset
+from data.models import TrainData, TestData, TrainFeatures, TestFeatures
+from preprocessing.models import Preprocessing, WordCloud
+from evaluasi.models import Evaluation
 
 @login_required
 # Create your views here.
@@ -15,6 +19,7 @@ def index(request):
         context['title'] = 'Dataset'
         context['form'] = form
         context['datasets'] = datasets
+        context['count'] = Dataset.objects.count()
     return render(request, 'dataset/index.html', context)
 
 @login_required
@@ -40,3 +45,19 @@ def upload_file(request):
         form = UploadFileForm()
     datasets = Dataset.objects.all()
     return render(request, 'dataset/index.html', {'form': form, 'datasets': datasets})
+
+@login_required
+def clear_all_data(request):
+    Preprocessing.objects.all().delete()
+    Dataset.objects.all().delete()
+    TrainData.objects.all().delete()
+    TestData.objects.all().delete()
+    TrainFeatures.objects.all().delete()
+    TestFeatures.objects.all().delete()
+    WordCloud.objects.all().delete()
+    Evaluation.objects.all().delete()
+    
+    if Dataset.objects.count() == 0 or TrainData.objects.count() == 0 or TestData.objects.count() == 0 or TrainFeatures.objects.count() == 0 or TestFeatures.objects.count() == 0 or Preprocessing.objects.count() == 0 or WordCloud.objects.count() == 0 or Evaluation.objects.count() == 0:
+        print('Semua tabel telah kosong')
+    messages.success(request, 'Semua data telah dihapus.')
+    return redirect('dataset:index')
