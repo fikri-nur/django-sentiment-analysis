@@ -2,43 +2,74 @@
 {% load static %}
 
 {% block styles %}
+<style>
+        .custom-table {
+            color: #333;
+            border-color: #ddd;
+        }
+
+        .custom-table td {
+            max-width: 200px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-    <div class="card shadow mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Support Vector Machine</h6>
-            <div class="text-right">
-                <a href="{% url 'pemodelan:train_and_evaluate_svm' %}" class="btn btn-success">
-                    <i class="fas fa-fw fa-solid fa-spinner"></i> Latih dan Evaluasi Data
-                </a>
-            </div>
-        </div>
-        <div class="card-body">
-        <p>Accuracy: {{ accuracy }}</p>
-        <p>Precision: {{ precision }}</p>
-        <p>Recall: {{ recall }}</p>
-        <p>F1 Score: {{ f1 }}</p>
-        <h6 class="mt-4">Confusion Matrix</h6>
-        <img src="data:image/png;base64,{{ confusion_matrix }}" alt="Confusion Matrix">
+<div class="card shadow mb-4">
+    <div
+        class="card-header d-flex justify-content-between align-items-center py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Support Vector Machine</h6>
+        <div class="text-right">
+            {% if not isTrue %}
+            <a href="{% url 'pemodelan:train_and_evaluate_svm' %}"
+                class="btn btn-success">
+                <i class="fas fa-fw fa-solid fa-spinner"></i> Latih dan Evaluasi
+                Model
+            </a>
+            {% endif %}
 
-        <hr>
-        <h6 class="mt-4">Predict Sentiment</h6>
-        <form method="post" action="{% url 'pemodelan:predict_sentiment' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="inputText">Input Text:</label>
-                <textarea class="form-control" id="inputText" name="input_text" rows="3" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Predict</button>
-        </form>
-        
-        {% if prediction %}
-        <hr>
-        <h6 class="mt-4">Prediction Result</h6>
-        <p>Sentiment: <strong>{{ prediction }}</strong></p>
-        {% endif %}
         </div>
     </div>
+    <div class="card-body">
+        {% if isTrue %}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered custom-table"
+                width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Metode</th>
+                        <th>% Data Latih</th>
+                        <th>% Data Uji</th>
+                        <th>Accuracy</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1 Score</th>
+                        <th>Waktu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ metode }}</td>
+                        <td>{{ train_size|floatformat:2 }}</td>
+                        <td>{{ test_size|floatformat:2 }}</td>
+                        <td>{{ accuracy|floatformat:2 }}</td>
+                        <td>{{ precision|floatformat:2 }}</td>
+                        <td>{{ recall|floatformat:2 }}</td>
+                        <td>{{ f1_score|floatformat:2 }}</td>
+                        <td>{{ created_at|date:"H:i, d F Y" }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr>
+            <div class="text-center">
+                <img src="{% static confusion_matrix %}" alt="Confusion Matrix">
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+            Latih Model Untuk Melihat Hasil.
+        </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
-

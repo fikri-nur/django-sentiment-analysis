@@ -23,18 +23,19 @@ import base64
 import joblib
 
 @login_required
-def indexView(request):
-    return render(request, "pemodelan/index.html")
-
-
-@login_required
 def naiveBayesView(request):
-    return render(request, "naivebayes/index.html")
+    context = {
+        'title': 'Pemodelan Naive Bayes',
+    }
+    return render(request, "naivebayes/index.html", context)
 
 
 @login_required
 def svmView(request):
-    return render(request, "svm/index.html")
+    context = {
+        'title': 'Pemodelan SVM',
+    }
+    return render(request, "svm/index.html", context)
 
 
 def train_and_evaluate_nb(request):
@@ -122,7 +123,7 @@ def train_and_evaluate_nb(request):
     vectorizer_path = os.path.join(folder_path, "tfidf_vectorizer.pkl")
     joblib.dump(model, model_path)
     joblib.dump(vectorizer, vectorizer_path)
-
+    
     # Save evaluation to database
     evaluation = Evaluation(
         metode="Naive Bayes",
@@ -137,13 +138,23 @@ def train_and_evaluate_nb(request):
         vectorizer_path=vectorizer_path,
     )
     evaluation.save()
-
+    
+    latest_evaluation = Evaluation.objects.latest("created_at")
+    cm_path = latest_evaluation.confusion_matrix_path
+    # Ubah cm path dari D:\Kuliah\Semester 8\Sistem\python\sentiment_analy... ke /static/naivebayes/20210929_123456/confusion_matrix.png
+    cm_path = cm_path.replace(current_dir, "").replace("\\", "/").replace("/static/", "")
     context = {
-        "accuracy": accuracy,
-        "precision": precision,
-        "recall": recall,
-        "f1": f1,
-        "confusion_matrix": image_base64,
+        'title': 'Pemodelan Naive Bayes',
+        'isTrue': True,
+        'metode': latest_evaluation.metode,
+        'test_size': latest_evaluation.test_size,
+        'train_size': latest_evaluation.train_size,
+        "accuracy": latest_evaluation.accuracy,
+        "precision": latest_evaluation.precision,
+        "recall": latest_evaluation.recall,
+        "f1_score": latest_evaluation.f1_score,
+        "created_at": latest_evaluation.created_at,
+        "confusion_matrix": cm_path,
     }
 
     return render(request, "naivebayes/index.html", context)
@@ -198,7 +209,7 @@ def train_and_evaluate_svm(request):
 
     # Predict on test data
     y_pred = model.predict(X_test_tfidf)
-
+    
     # Evaluate model
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
@@ -240,13 +251,14 @@ def train_and_evaluate_svm(request):
     cm_path = os.path.join(folder_path, "confusion_matrix.png")
     with open(cm_path, "wb") as f:
         f.write(image_png)
-
+        
     # Save model and vectorizer
     model_path = os.path.join(folder_path, "svm_model.pkl")
     vectorizer_path = os.path.join(folder_path, "tfidf_vectorizer.pkl")
     joblib.dump(model, model_path)
     joblib.dump(vectorizer, vectorizer_path)
-
+    
+    
     # Save evaluation to database
     evaluation = Evaluation(
         metode="SVM",
@@ -262,12 +274,22 @@ def train_and_evaluate_svm(request):
     )
     evaluation.save()
 
+    latest_evaluation = Evaluation.objects.latest("created_at")
+    cm_path = latest_evaluation.confusion_matrix_path
+    # Ubah cm path dari D:\Kuliah\Semester 8\Sistem\python\sentiment_analy... ke /static/naivebayes/20210929_123456/confusion_matrix.png
+    cm_path = cm_path.replace(current_dir, "").replace("\\", "/").replace("/static/", "")
     context = {
-        "accuracy": accuracy,
-        "precision": precision,
-        "recall": recall,
-        "f1": f1,
-        "confusion_matrix": image_base64,
+        'title': 'Pemodelan Naive Bayes',
+        'isTrue': True,
+        'metode': latest_evaluation.metode,
+        'test_size': latest_evaluation.test_size,
+        'train_size': latest_evaluation.train_size,
+        "accuracy": latest_evaluation.accuracy,
+        "precision": latest_evaluation.precision,
+        "recall": latest_evaluation.recall,
+        "f1_score": latest_evaluation.f1_score,
+        "created_at": latest_evaluation.created_at,
+        "confusion_matrix": cm_path,
     }
 
     return render(request, "svm/index.html", context)
