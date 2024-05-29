@@ -5,8 +5,10 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
+    path('generate_wordcloud/', views.generate_wordcloud, name='generate_wordcloud'),
     path('login/', views.loginView, name='login'),
     path('logout/', views.logoutView, name='logout'),
     path('register/', views.register, name='register'),
     path('dataset/', include(('dataset.urls', 'dataset'), namespace='dataset')),
+    path('preprocessing/', include(('preprocessing.urls', 'preprocessing'), namespace='preprocessing')),
 ]

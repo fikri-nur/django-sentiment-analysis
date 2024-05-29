@@ -1,24 +1,98 @@
+import json
+import os
 from django.shortcuts import render, redirect
+from django.conf import settings
+
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+
+from wordcloud import WordCloud
+
 from . import forms
 from dataset.models import Dataset
+from preprocessing.models import Preprocessing, WordCloud as WordCloudPath
+
+def generate_word_cloud(text, output_path):
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+    wordcloud.to_file(output_path)
+
+def generate_wordcloud(request):
+    if request.user.is_authenticated:
+        # Get texts for word cloud
+        positive_texts = ' '.join(
+            Preprocessing.objects.filter(dataset__label="positif").values_list('stemmed_text', flat=True)
+        )
+        negative_texts = ' '.join(
+            Preprocessing.objects.filter(dataset__label="negatif").values_list('stemmed_text', flat=True)
+        )
+        neutral_texts = ' '.join(
+            Preprocessing.objects.filter(dataset__label="netral").values_list('stemmed_text', flat=True)
+        )
+
+        # Check and generate word cloud paths
+        wordcloud_dir = os.path.join(settings.STATICFILES_DIRS[0], 'img', 'wordclouds')
+        os.makedirs(wordcloud_dir, exist_ok=True)
+        
+        def create_wordcloud(sentiment, text):
+            wc_path = os.path.join(wordcloud_dir, f'{sentiment}_wordcloud.png')
+            generate_word_cloud(text, wc_path)
+            wc_path_obj = WordCloudPath.objects.filter(sentiment=sentiment).first()
+            if wc_path_obj:
+                wc_path_obj.path = wc_path
+                wc_path_obj.save()
+            else:
+                WordCloudPath.objects.create(sentiment=sentiment, path=wc_path)
+
+        create_wordcloud('positif', positive_texts)
+        create_wordcloud('negatif', negative_texts)
+        create_wordcloud('netral', neutral_texts)
+
+        return redirect('index')
+    else:
+        return redirect("login")
 
 def index(request):
     if request.user.is_authenticated:
-        # countevery label
+        # Count every label
         positif = Dataset.objects.filter(label="positif").count()
         negatif = Dataset.objects.filter(label="negatif").count()
         netral = Dataset.objects.filter(label="netral").count()
-        
+
         countEverySentiment = {
             "Positif": positif,
             "Negatif": negatif,
             "Netral": netral
         }
+        
+        countEverySentiment_json = json.dumps(countEverySentiment)
 
+
+        # Check if word cloud paths exist
+        positive_wc_obj = WordCloudPath.objects.filter(sentiment='positif').first()
+        negative_wc_obj = WordCloudPath.objects.filter(sentiment='negatif').first()
+        neutral_wc_obj = WordCloudPath.objects.filter(sentiment='netral').first()
+
+        if positive_wc_obj:
+            positive_wordcloud_url = positive_wc_obj.path
+        else:
+            positive_wordcloud_url = 'img/default_wordcloud.png'
+
+        if negative_wc_obj:
+            negative_wordcloud_url = negative_wc_obj.path
+        else:
+            negative_wordcloud_url = 'img/default_wordcloud.png'
+
+        if neutral_wc_obj:
+            neutral_wordcloud_url = neutral_wc_obj.path
+        else:
+            neutral_wordcloud_url = 'img/default_wordcloud.png'
+        
+        check_wordcloud = None
+        if positive_wordcloud_url == 'img/default_wordcloud.png' or negative_wordcloud_url == 'img/default_wordcloud.png' or neutral_wordcloud_url == 'img/default_wordcloud.png':
+            check_wordcloud = True
         context = {
             "title": "Dashboard",
             "countEveryLabel": [
@@ -27,12 +101,18 @@ def index(request):
                 ["Netral", netral, "primary"],
             ],
             "countEverySentiment": countEverySentiment,
+            "countEverySentiment_json": countEverySentiment_json,
             "total": positif + negatif + netral,
+            "check_wordcloud": check_wordcloud,
+            "positive_wordcloud_url": os.path.join('static', positive_wordcloud_url),
+            "negative_wordcloud_url": os.path.join('static', negative_wordcloud_url),
+            "neutral_wordcloud_url": os.path.join('static', neutral_wordcloud_url),
         }
-        
+
         return render(request, "index.html", context)
     else:
         return redirect("login")
+
 
 def loginView(request):
     context = {}
