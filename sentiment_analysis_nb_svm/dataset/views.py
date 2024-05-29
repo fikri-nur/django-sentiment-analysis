@@ -6,10 +6,14 @@ from .forms import UploadFileForm
 
 # Create your views here.
 def index(request):
+    context = {}
     if request.method == 'GET':
         form = UploadFileForm()
         datasets = Dataset.objects.all()
-    return render(request, 'dataset/index.html', {'form': form, 'datasets': datasets})
+        context['title'] = 'Dataset'
+        context['form'] = form
+        context['datasets'] = datasets
+    return render(request, 'dataset/index.html', context)
 
 def upload_file(request):
     if request.method == 'POST':
