@@ -7,6 +7,11 @@
             <h6 class="m-0 font-weight-bold text-primary">Jumlah Data Uji dan Pemilihan Model</h6>
         </div>
         <div class="card-body">
+        {% if empty %}
+        <div class="alert alert-warning" role="alert">
+            Lakukan tahap preprocessing hingga selesai terlebih dahulu!.
+        </div>
+        {% else %}
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
@@ -14,6 +19,7 @@
                     <button type="submit" class="btn btn-primary">Split Data</button>
                 </div>
             </form>
+        {% endif %}
         </div>
     </div>
 {% endblock %}

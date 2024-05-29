@@ -2,7 +2,7 @@
 from django import forms
 
 
-class SplitDataPilihModel(forms.Form):
+class SplitDataPilihMetode(forms.Form):
     test_size = forms.ChoiceField(
         label="Persentase Data Uji",
         choices=[(str(i/10), str(i/10)) for i in range(1, 4)],

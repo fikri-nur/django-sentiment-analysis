@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from .forms import SplitDataPilihModel
+from .forms import SplitDataPilihMetode
 
 from .models import TrainData, TestData, TrainFeatures, TestFeatures
 from dataset.models import Dataset
@@ -14,8 +14,20 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 # Create your views here.
 @login_required
 def indexView(request):
+    # Ambil kolom stemmed_text dari tabel Preprocessing
+    preprocessings = Preprocessing.objects.all()
+    stemmed_text = preprocessings.values_list('stemmed_text', flat=True)
+    countStemmedText = stemmed_text.count()
+    empty = True
+    if countStemmedText != 0:
+        empty = False
+    context = {
+        'title': 'Bagi Data dan Pilih Metode',
+        'empty': empty,
+        
+    }
     if request.method == 'POST':
-        form = SplitDataPilihModel(request.POST)
+        form = SplitDataPilihMetode(request.POST)
         if form.is_valid():
             test_size = form.cleaned_data['test_size']
             model = form.cleaned_data['model']
@@ -26,9 +38,10 @@ def indexView(request):
                 return redirect('pemodelan:svm_view')
             return redirect('data:indexTest_view')
     else:
-        form = SplitDataPilihModel()
-
-    return render(request, 'data/index.html', {'form': form})   
+        form = SplitDataPilihMetode()
+        
+    context['form'] = form
+    return render(request, 'data/index.html', context)   
 
 def split_data(test_size):
     test_size = float(test_size)
@@ -54,11 +67,29 @@ def split_data(test_size):
 
 def indexTrainView(request):
     train_data = TrainData.objects.all()
-    return render(request, 'train/index.html', {'train_data': train_data})
+    countTrainData = train_data.count()
+    empty = True
+    if countTrainData != 0:
+        empty = False
+    context = {
+        'title': 'Data Training',
+        'train_data': train_data,
+        'empty': empty,
+    }
+    return render(request, 'train/index.html', context)
 
 def indexTestView(request):
     test_data = TestData.objects.all()
-    return render(request, 'test/index.html', {'test_data': test_data})
+    countTestData = test_data.count()
+    empty = True
+    if countTestData != 0:
+        empty = False
+    context = {
+        'title': 'Data Testing',
+        'test_data': test_data,
+        'empty': empty,
+    }
+    return render(request, 'test/index.html', context)
 
 def vectorize_data(request):
     train_features = TrainFeatures.objects.all()
