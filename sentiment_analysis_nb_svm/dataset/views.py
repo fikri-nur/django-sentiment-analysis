@@ -3,7 +3,9 @@ from django.contrib import messages
 import pandas as pd
 from .models import Dataset
 from .forms import UploadFileForm
+from django.contrib.auth.decorators import login_required
 
+@login_required
 # Create your views here.
 def index(request):
     context = {}
@@ -15,6 +17,7 @@ def index(request):
         context['datasets'] = datasets
     return render(request, 'dataset/index.html', context)
 
+@login_required
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)

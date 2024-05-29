@@ -19,6 +19,7 @@ def generate_word_cloud(text, output_path):
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
     wordcloud.to_file(output_path)
 
+@login_required
 def generate_wordcloud(request):
     if request.user.is_authenticated:
         # Get texts for word cloud
@@ -28,9 +29,9 @@ def generate_wordcloud(request):
         negative_texts = ' '.join(
             Preprocessing.objects.filter(dataset__label="negatif").values_list('stemmed_text', flat=True)
         )
-        neutral_texts = ' '.join(
-            Preprocessing.objects.filter(dataset__label="netral").values_list('stemmed_text', flat=True)
-        )
+        # neutral_texts = ' '.join(
+        #     Preprocessing.objects.filter(dataset__label="netral").values_list('stemmed_text', flat=True)
+        # )
 
         # Check and generate word cloud paths
         wordcloud_dir = os.path.join(settings.STATICFILES_DIRS[0], 'img', 'wordclouds')
@@ -48,12 +49,13 @@ def generate_wordcloud(request):
 
         create_wordcloud('positif', positive_texts)
         create_wordcloud('negatif', negative_texts)
-        create_wordcloud('netral', neutral_texts)
+        # create_wordcloud('netral', neutral_texts)
 
         return redirect('index')
     else:
         return redirect("login")
 
+@login_required
 def index(request):
     if request.user.is_authenticated:
         # Count every label
@@ -73,7 +75,7 @@ def index(request):
         # Check if word cloud paths exist
         positive_wc_obj = WordCloudPath.objects.filter(sentiment='positif').first()
         negative_wc_obj = WordCloudPath.objects.filter(sentiment='negatif').first()
-        neutral_wc_obj = WordCloudPath.objects.filter(sentiment='netral').first()
+        # neutral_wc_obj = WordCloudPath.objects.filter(sentiment='netral').first()
 
         if positive_wc_obj:
             positive_wordcloud_url = positive_wc_obj.path
@@ -85,13 +87,13 @@ def index(request):
         else:
             negative_wordcloud_url = 'img/default_wordcloud.png'
 
-        if neutral_wc_obj:
-            neutral_wordcloud_url = neutral_wc_obj.path
-        else:
-            neutral_wordcloud_url = 'img/default_wordcloud.png'
+        # if neutral_wc_obj:
+        #     neutral_wordcloud_url = neutral_wc_obj.path
+        # else:
+        #     neutral_wordcloud_url = 'img/default_wordcloud.png'
         
         check_wordcloud = None
-        if positive_wordcloud_url == 'img/default_wordcloud.png' or negative_wordcloud_url == 'img/default_wordcloud.png' or neutral_wordcloud_url == 'img/default_wordcloud.png':
+        if positive_wordcloud_url == 'img/default_wordcloud.png' or negative_wordcloud_url == 'img/default_wordcloud.png':
             check_wordcloud = True
         context = {
             "title": "Dashboard",
@@ -106,7 +108,6 @@ def index(request):
             "check_wordcloud": check_wordcloud,
             "positive_wordcloud_url": os.path.join('static', positive_wordcloud_url),
             "negative_wordcloud_url": os.path.join('static', negative_wordcloud_url),
-            "neutral_wordcloud_url": os.path.join('static', neutral_wordcloud_url),
         }
 
         return render(request, "index.html", context)

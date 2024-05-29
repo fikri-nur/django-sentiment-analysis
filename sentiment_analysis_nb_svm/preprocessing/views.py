@@ -1,5 +1,5 @@
 import time
-
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from dataset.models import Dataset
@@ -21,7 +21,7 @@ from .utils import (
 
 # Create your views here.
 
-
+@login_required
 def process_cleaning(request):
     # Fetch all datasets
     datasets = Dataset.objects.all()
@@ -34,7 +34,7 @@ def process_cleaning(request):
         preprocessing.save()
     return redirect("preprocessing:cleansing_view")
 
-
+@login_required
 def cleansingView(request):
     datasets = Dataset.objects.all()
     preprocessings = Preprocessing.objects.all()
@@ -45,7 +45,7 @@ def cleansingView(request):
     }
     return render(request, "preprocessing/cleansing.html", context)
 
-
+@login_required
 def process_casefolding(request):
     preprocessings = Preprocessing.objects.all()
     for preprocessing in preprocessings:
@@ -54,7 +54,7 @@ def process_casefolding(request):
             preprocessing.save()
     return redirect("preprocessing:casefolding_view")
 
-
+@login_required
 def casefoldingView(request):
     preprocessings = Preprocessing.objects.all()
     countBefore = preprocessings.filter(cleaned_text__isnull=True).count()
@@ -67,7 +67,7 @@ def casefoldingView(request):
     }
     return render(request, "preprocessing/case-folding.html", context)
 
-
+@login_required
 def process_tokenization(request):
     preprocessings = Preprocessing.objects.all()
     for preprocessing in preprocessings:
@@ -76,7 +76,7 @@ def process_tokenization(request):
             preprocessing.save()
     return redirect("preprocessing:tokenization_view")
 
-
+@login_required
 def tokenizationView(request):
     preprocessings = Preprocessing.objects.all()
     countBefore = preprocessings.filter(case_folded_text__isnull=True).count()
@@ -89,6 +89,7 @@ def tokenizationView(request):
     }
     return render(request, "preprocessing/tokenizing.html", context)
 
+@login_required
 def process_normalization(request):
     preprocessings = Preprocessing.objects.all()
     slang_words = read_slang_words("file/normalization/slang_word_normalization.txt")
@@ -110,7 +111,7 @@ def process_normalization(request):
         preprocessing.save()
     return redirect("preprocessing:normalization_view")
 
-
+@login_required
 def normalizationView(request):
     preprocessings = Preprocessing.objects.all()
     countBefore = preprocessings.filter(tokenized_text__isnull=True).count()
@@ -123,7 +124,7 @@ def normalizationView(request):
     }
     return render(request, "preprocessing/normalization.html", context)
 
-
+@login_required
 def process_stopword(request):
     preprocessings = Preprocessing.objects.all()
     stopwords = read_stopwords("file/stopword/combined_stopwords.txt")
@@ -143,7 +144,7 @@ def process_stopword(request):
             preprocessing.save()
     return redirect("preprocessing:stopword_view")
 
-
+@login_required
 def stopwordView(request):
     preprocessings = Preprocessing.objects.all()
     countBefore = preprocessings.filter(normalized_text__isnull=True).count()
@@ -156,7 +157,7 @@ def stopwordView(request):
     }
     return render(request, "preprocessing/stopword.html", context)
 
-
+@login_required
 def process_stemming(request):
     preprocessings = Preprocessing.objects.all()
     stemming_words = read_stemming_words("file/stemming/words_stemming.txt")
@@ -182,6 +183,7 @@ def process_stemming(request):
     print(f"Time taken for custom stemming: {elapsed_time} seconds")
     return redirect("preprocessing:stemming_view")
 
+@login_required
 def stemmingView(request):
     preprocessings = Preprocessing.objects.all()
     countBefore = preprocessings.filter(stopwords_removed_text__isnull=True).count()
@@ -194,6 +196,7 @@ def stemmingView(request):
     }
     return render(request, "preprocessing/stemming.html", context)
 
+@login_required
 def process_stemming2(request):
     preprocessings = Preprocessing.objects.all()
     
