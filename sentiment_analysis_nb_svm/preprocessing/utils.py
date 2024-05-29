@@ -1,10 +1,8 @@
 import os
 import re
 from ast import literal_eval
-import nltk
 import json
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 
 def clean_text(text):
     # Mengganti kata berulang seperti "pagi-pagi" menjadi "pagi"

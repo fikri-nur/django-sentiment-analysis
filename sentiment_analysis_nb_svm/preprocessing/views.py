@@ -27,7 +27,6 @@ def process_cleaning(request):
     datasets = Dataset.objects.all()
     for dataset in datasets:
         cleaned_text = clean_text(dataset.full_text)
-        # Save the cleaned text to Preprocessing table
         preprocessing = Preprocessing.objects.create(
             dataset=dataset, cleaned_text=cleaned_text
         )
@@ -94,7 +93,6 @@ def process_normalization(request):
     preprocessings = Preprocessing.objects.all()
     slang_words = read_slang_words("file/normalization/slang_word_normalization.txt")
     for preprocessing in preprocessings:
-        # Ensure tokenized_text is in list format
         tokenized_text = preprocessing.tokenized_text
         if (
             isinstance(tokenized_text, str)
@@ -103,10 +101,8 @@ def process_normalization(request):
         ):
             tokenized_text = literal_eval(tokenized_text)
 
-        # Normalize text using slang words
         normalized_text = normalize_text_with_slang(tokenized_text, slang_words)
 
-        # Save the normalized text as a token list
         preprocessing.normalized_text = normalized_text
         preprocessing.save()
     return redirect("preprocessing:normalization_view")
@@ -131,7 +127,6 @@ def process_stopword(request):
     for preprocessing in preprocessings:
         if preprocessing.stopwords_removed_text is None:
             normalized_text = preprocessing.normalized_text
-            # Ubah normalized_text menjadi list jika perlu
             if (
                 isinstance(normalized_text, str)
                 and normalized_text.startswith("[")
@@ -160,27 +155,16 @@ def stopwordView(request):
 @login_required
 def process_stemming(request):
     preprocessings = Preprocessing.objects.all()
-    stemming_words = read_stemming_words("file/stemming/words_stemming.txt")
     
-    start_time = time.time()
     for preprocessing in preprocessings:
         if preprocessing.stemmed_text is None:
-            stopwords_removed_text = preprocessing.stopwords_removed_text
-            if isinstance(stopwords_removed_text, str) and stopwords_removed_text.startswith('[') and stopwords_removed_text.endswith(']'):
-                stopwords_removed_text = literal_eval(stopwords_removed_text)
-            
-            # Apply stemming
-            stemmed_text = apply_stemming(stopwords_removed_text, stemming_words)
+            stemmed_text = apply_sastrawi_stemming(preprocessing.stopwords_removed_text)
             print(stemmed_text)
-            # Save the stemmed text
             preprocessing.stemmed_text = stemmed_text
             preprocessing.save()
         else:
             preprocessing.stemmed_text = None
             preprocessing.save()
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(f"Time taken for custom stemming: {elapsed_time} seconds")
     return redirect("preprocessing:stemming_view")
 
 @login_required
@@ -195,24 +179,3 @@ def stemmingView(request):
         "countAfter": countAfter,
     }
     return render(request, "preprocessing/stemming.html", context)
-
-@login_required
-def process_stemming2(request):
-    preprocessings = Preprocessing.objects.all()
-    
-    start_time = time.time()
-    for preprocessing in preprocessings:
-        if preprocessing.stemmed_text is None:
-            # Apply Sastrawi stemming
-            stemmed_text = apply_sastrawi_stemming(preprocessing.stopwords_removed_text)
-            print(stemmed_text)
-            # Save the stemmed text
-            preprocessing.stemmed_text = stemmed_text
-            preprocessing.save()
-        else:
-            preprocessing.stemmed_text = None
-            preprocessing.save()
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(f"Time taken for Sastrawi stemming: {elapsed_time} seconds")
-    return redirect("preprocessing:stemming_view")

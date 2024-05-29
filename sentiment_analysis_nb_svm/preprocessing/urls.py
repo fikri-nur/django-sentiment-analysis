@@ -19,5 +19,5 @@ urlpatterns = [
     path("process_stopword", views.process_stopword, name="process_stopword"),
     # Stemming
     path("stemming", views.stemmingView, name="stemming_view"),
-    path("process_stemming", views.process_stemming2, name="process_stemming"),
+    path("process_stemming", views.process_stemming, name="process_stemming"),
 ]

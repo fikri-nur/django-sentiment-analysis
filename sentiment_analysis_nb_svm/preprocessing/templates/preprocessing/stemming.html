@@ -20,7 +20,7 @@
     <div class="card-header d-flex justify-content-between align-items-center py-3">
         <h6 class="m-0 font-weight-bold text-primary">Stemming Data</h6>
         <div class="text-right">
-            <a href="{% url 'preprocessing:normalization_view' %}" class="btn btn-primary">
+            <a href="{% url 'preprocessing:stopword_view' %}" class="btn btn-primary">
                 <i class="fas fa-fw fa-solid fa-angle-left"></i>
             </a>
             {% if countBefore == 0 and countAfter != 0 %}
@@ -28,9 +28,6 @@
                 <i class="fas fa-fw fa-solid fa-spinner"></i> Stemming
             </a>
             {% endif %}
-            {% comment %} <a href="{% url 'preprocessing:next_step_view' %}" class="btn btn-primary">
-                <i class="fas fa-fw fa-solid fa-angle-right"></i>
-            </a> {% endcomment %}
         </div>
     </div>
     <div class="card-body">
