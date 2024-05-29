@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Naive Bayes</h6>
+            <div class="text-right">
+                <a href="{% url 'pemodelan:train_and_evaluate' %}" class="btn btn-success">
+                    <i class="fas fa-fw fa-solid fa-spinner"></i> Latih dan Evaluasi Data
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+        <p>Accuracy: {{ accuracy }}</p>
+        <p>Precision: {{ precision }}</p>
+        <p>Recall: {{ recall }}</p>
+        <p>F1 Score: {{ f1 }}</p>
+        <h6 class="mt-4">Confusion Matrix</h6>
+        <img src="data:image/png;base64,{{ confusion_matrix }}" alt="Confusion Matrix">
+
+        <hr>
+        <h6 class="mt-4">Predict Sentiment</h6>
+        <form method="post" action="{% url 'pemodelan:predict_sentiment' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="inputText">Input Text:</label>
+                <textarea class="form-control" id="inputText" name="input_text" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Predict</button>
+        </form>
+        
+        {% if prediction %}
+        <hr>
+        <h6 class="mt-4">Prediction Result</h6>
+        <p>Sentiment: <strong>{{ prediction }}</strong></p>
+        {% endif %}
+        </div>
+    </div>
+{% endblock %}
+

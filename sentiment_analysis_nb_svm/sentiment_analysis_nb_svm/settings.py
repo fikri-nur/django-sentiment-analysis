@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'dataset',
     'preprocessing',
     'data',
-    'naivebayes',
+    'pemodelan',
 ]
 
 MIDDLEWARE = [
