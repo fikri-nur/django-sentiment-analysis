@@ -13,4 +13,6 @@ urlpatterns = [
     path('preprocessing/', include(('preprocessing.urls', 'preprocessing'), namespace='preprocessing')),
     path('data/', include(('data.urls', 'data'), namespace='data')),
     path('pemodelan/', include(('pemodelan.urls', 'pemodelan'), namespace='pemodelan')),
+    path('evaluasi/', include(('evaluasi.urls', 'evaluasi'), namespace='evaluasi')),
+    path('prediksi/', include(('prediksi.urls', 'prediksi'), namespace='prediksi')),
 ]

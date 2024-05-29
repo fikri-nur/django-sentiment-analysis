@@ -81,17 +81,23 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Menu:</h6>
+                <a class="collapse-item" href="{% url 'pemodelan:index_view' %}">Model</a>
                 <a class="collapse-item" href="{% url 'pemodelan:naive_bayes_view' %}">Naive Bayes</a>
-                <a class="collapse-item" href="">Support Vector Machine</a>
+                <a class="collapse-item" href="{% url 'pemodelan:svm_view' %}">Support Vector Machine</a>
             </div>
         </div>
     </li>
-    {% comment %} 
     <!-- Nav Item -->
     <li class="nav-item">
-        <a class="nav-link" href="charts.html">
+        <a class="nav-link" href="{% url 'evaluasi:index_view' %}">
             <i class="fas fa-fw fa-solid fa-chart-simple"></i>
             <span>Evaluasi</span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'prediksi:index_view' %}">
+            <i class="fas fa-fw fa-solid fa-chart-simple"></i>
+            <span>Prediksi</span></a>
     </li>
 
     <!-- Divider -->
@@ -100,6 +106,6 @@
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div> {% endcomment %}
+    </div>
 </ul>
 <!-- End of Sidebar -->

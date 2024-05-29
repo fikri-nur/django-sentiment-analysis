@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'preprocessing',
     'data',
     'pemodelan',
+    'evaluasi',
+    'prediksi',
 ]
 
 MIDDLEWARE = [

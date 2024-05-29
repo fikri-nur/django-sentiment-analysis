@@ -11,8 +11,6 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-
-from pemodelan.views import train_and_evaluate_model
 # Create your views here.
 @login_required
 def indexView(request):
@@ -24,6 +22,8 @@ def indexView(request):
             split_data(test_size)
             if model == 'naive_bayes':
                 return redirect('pemodelan:naive_bayes_view')
+            elif model == 'svm':
+                return redirect('pemodelan:svm_view')
             return redirect('data:indexTest_view')
     else:
         form = SplitDataPilihModel()
