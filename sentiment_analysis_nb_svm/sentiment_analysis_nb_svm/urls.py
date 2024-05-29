@@ -11,4 +11,5 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('dataset/', include(('dataset.urls', 'dataset'), namespace='dataset')),
     path('preprocessing/', include(('preprocessing.urls', 'preprocessing'), namespace='preprocessing')),
+    path('data/', include(('data.urls', 'data'), namespace='data')),
 ]

@@ -62,11 +62,18 @@
                 <div
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Word Cloud</h6>
-                    <a href="{% url 'generate_wordcloud' %}"
+                    {% if total != 0 %}
+                        <a href="{% url 'generate_wordcloud' %}"
                         class="btn btn-primary">Generate Word Cloud</a>
+                    {% endif %}
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
+                    {% if total == 0 %}
+                        <div class="alert alert-warning" role="alert">
+                            Tidak ada data yang tersedia.
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

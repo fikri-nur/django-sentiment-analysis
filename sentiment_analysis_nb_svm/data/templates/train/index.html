@@ -1,0 +1,31 @@
+<!-- templates/data/train.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Data Latih</h6>
+    </div>
+    <div class="card-body">
+        <table class="table custom-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Teks</th>
+                    <th>Label</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in train_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.text }}</td>
+                    <td>{{ item.label }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
