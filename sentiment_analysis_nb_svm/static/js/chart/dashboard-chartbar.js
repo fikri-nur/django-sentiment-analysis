@@ -14,9 +14,9 @@ var myBarChart = new Chart(ctx, {
         labels: Object.keys(countEverySentiment),
         datasets: [{
             label: "Jumlah Sentimen",
-            backgroundColor: ["#e74a3b", "#f6c23e", "#4e73df"],
-            hoverBackgroundColor: ["#e74a3b", "#f6c23e", "#4e73df"],
-            borderColor: "#4e73df",
+            backgroundColor: ["#198754", "#dc3545"],
+            hoverBackgroundColor: ["#198754", "#dc3545"],
+            borderColor: "#8E919B",
             data: Object.values(countEverySentiment),
         }],
     },
@@ -47,8 +47,8 @@ var myBarChart = new Chart(ctx, {
                     padding: 10,
                 },
                 gridLines: {
-                    color: "rgb(234, 236, 244)",
-                    zeroLineColor: "rgb(234, 236, 244)",
+                    color: "rgb(142,145,155)",
+                    zeroLineColor: "rgb(142,145,155)",
                     drawBorder: false,
                     borderDash: [2],
                     zeroLineBorderDash: [2]

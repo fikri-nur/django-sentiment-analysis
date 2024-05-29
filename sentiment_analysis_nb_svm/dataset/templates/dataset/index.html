@@ -61,7 +61,11 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ dataset.username }}</td>
                                 <td>{{ dataset.full_text }}</td>
-                                <td>{{ dataset.label }}</td>
+                                {% if dataset.label == 'negatif' %}
+                                <td><span class="badge badge-danger">Negatif</span></td>
+                                {% elif dataset.label == 'positif' %}
+                                <td><span class="badge badge-success">Positif</span></td>
+                                {% endif %}
                             </tr>
                         {% empty %}
                             <tr>

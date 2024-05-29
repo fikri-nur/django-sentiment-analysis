@@ -19,7 +19,8 @@
                         <div
                             class="text-xs font-weight-bold text-{{ color }} text-uppercase mb-1">
                             {{ label }}</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ count }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        {{ count }}</div>
                     </div>
                     <div class="col-auto">
                         <i
@@ -44,54 +45,55 @@
             </div>
             <div class="card-body">
                 {% if total == 0 %}
-                    <div class="alert alert-warning" role="alert">
+                <div class="alert alert-warning" role="alert">
                     Tidak ada data yang tersedia.
-                    </div>
+                </div>
                 {% else %}
-                    <canvas id="myBarChart"></canvas>
-                    <div id="chartData" data-sentiment="{{ countEverySentiment_json }}"></div>
+                <canvas id="myBarChart"></canvas>
+                <div id="chartData"
+                    data-sentiment="{{ countEverySentiment_json }}"></div>
                 {% endif %}
             </div>
         </div>
     </div>
     <!-- Word Cloud Positif -->
     {% if check_wordcloud %}
-        <div class="col-xl-12 col-lg-12">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div
-                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Word Cloud</h6>
-                    {% if total != 0 %}
-                        <a href="{% url 'generate_wordcloud' %}"
-                        class="btn btn-primary">Generate Word Cloud</a>
-                    {% endif %}
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Word Cloud</h6>
+                {% if total != 0 %}
+                <a href="{% url 'generate_wordcloud' %}"
+                    class="btn btn-primary">Generate Word Cloud</a>
+                {% endif %}
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                {% if total == 0 %}
+                <div class="alert alert-warning" role="alert">
+                    Tidak ada data yang tersedia.
                 </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    {% if total == 0 %}
-                        <div class="alert alert-warning" role="alert">
-                            Tidak ada data yang tersedia.
-                        </div>
-                    {% endif %}
-                </div>
+                {% endif %}
             </div>
         </div>
+    </div>
     {% else %}
     <div class="col-xl-12 col-lg-12">
         <div class="card shadow mb-4">
             <!-- Card Header - Dropdown -->
             <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Word Cloud - Positif</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Word Cloud -
+                    Positif</h6>
             </div>
             <!-- Card Body -->
-                <div class="card-body">
-                    <img src="{% static positive_wordcloud_url %}"
-                                    alt="Positive Word Cloud"
-                                    class="img-fluid mx-auto d-block"
-                                    style="max-width: 100%; margin-bottom: 20px;">
-                </div>
+            <div class="card-body">
+                <img src="{% static positive_wordcloud_url %}"
+                    alt="Positive Word Cloud"
+                    class="img-fluid mx-auto d-block"
+                    style="max-width: 100%; margin-bottom: 20px;">
             </div>
         </div>
     </div>
@@ -100,38 +102,19 @@
             <!-- Card Header - Dropdown -->
             <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Word Cloud - Negatif</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Word Cloud -
+                    Negatif</h6>
             </div>
             <!-- Card Body -->
-                <div class="card-body">
-                    <img src="{% static negative_wordcloud_url %}"
-                                alt="Negative Word Cloud"
-                                class="img-fluid mx-auto d-block"
-                                style="max-width: 100%; margin-bottom: 20px;">
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-12 col-lg-12">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div
-                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Word Cloud - Netral</h6>
-            </div>
-            <!-- Card Body -->
-                <div class="card-body">
-                    <img src="{% static neutral_wordcloud_url %}"
-                                alt="Neutral Word Cloud"
-                                class="img-fluid mx-auto d-block"
-                                style="max-width: 100%; margin-bottom: 20px;">
-                </div>
+            <div class="card-body">
+                <img src="{% static negative_wordcloud_url %}"
+                    alt="Negative Word Cloud"
+                    class="img-fluid mx-auto d-block"
+                    style="max-width: 100%; margin-bottom: 20px;">
             </div>
         </div>
     </div>
     {% endif %}
-    
-    
 </div>
 {% endblock %}
 

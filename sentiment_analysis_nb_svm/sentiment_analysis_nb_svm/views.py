@@ -29,9 +29,6 @@ def generate_wordcloud(request):
         negative_texts = ' '.join(
             Preprocessing.objects.filter(dataset__label="negatif").values_list('stemmed_text', flat=True)
         )
-        # neutral_texts = ' '.join(
-        #     Preprocessing.objects.filter(dataset__label="netral").values_list('stemmed_text', flat=True)
-        # )
 
         # Check and generate word cloud paths
         wordcloud_dir = os.path.join(settings.STATICFILES_DIRS[0], 'img', 'wordclouds')
@@ -49,7 +46,6 @@ def generate_wordcloud(request):
 
         create_wordcloud('positif', positive_texts)
         create_wordcloud('negatif', negative_texts)
-        # create_wordcloud('netral', neutral_texts)
 
         return redirect('index')
     else:
@@ -61,12 +57,10 @@ def index(request):
         # Count every label
         positif = Dataset.objects.filter(label="positif").count()
         negatif = Dataset.objects.filter(label="negatif").count()
-        netral = Dataset.objects.filter(label="netral").count()
 
         countEverySentiment = {
             "Positif": positif,
             "Negatif": negatif,
-            "Netral": netral
         }
         
         countEverySentiment_json = json.dumps(countEverySentiment)
@@ -75,7 +69,6 @@ def index(request):
         # Check if word cloud paths exist
         positive_wc_obj = WordCloudPath.objects.filter(sentiment='positif').first()
         negative_wc_obj = WordCloudPath.objects.filter(sentiment='negatif').first()
-        # neutral_wc_obj = WordCloudPath.objects.filter(sentiment='netral').first()
 
         if positive_wc_obj:
             positive_wordcloud_url = positive_wc_obj.path
@@ -86,11 +79,6 @@ def index(request):
             negative_wordcloud_url = negative_wc_obj.path
         else:
             negative_wordcloud_url = 'img/default_wordcloud.png'
-
-        # if neutral_wc_obj:
-        #     neutral_wordcloud_url = neutral_wc_obj.path
-        # else:
-        #     neutral_wordcloud_url = 'img/default_wordcloud.png'
         
         check_wordcloud = None
         if positive_wordcloud_url == 'img/default_wordcloud.png' or negative_wordcloud_url == 'img/default_wordcloud.png':
@@ -100,11 +88,10 @@ def index(request):
             "countEveryLabel": [
                 ["Positif", positif, "success"],
                 ["Negatif", negatif, "danger"],
-                ["Netral", netral, "primary"],
             ],
             "countEverySentiment": countEverySentiment,
             "countEverySentiment_json": countEverySentiment_json,
-            "total": positif + negatif + netral,
+            "total": positif + negatif,
             "check_wordcloud": check_wordcloud,
             "positive_wordcloud_url": os.path.join('static', positive_wordcloud_url),
             "negative_wordcloud_url": os.path.join('static', negative_wordcloud_url),

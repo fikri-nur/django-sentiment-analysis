@@ -70,29 +70,6 @@
             </div>
         </div>
     </li>
-    {% comment %} 
-    <!-- Nav Item -->
-    <li class="nav-item {% if request.resolver_match.url_name == 'tfidf_index">
-        <a class="nav-link" href="{% url 'tfidf_index' %}">
-            <i class="fas fa-fw fa-solid fa-database"></i>
-            <span>Pembobotan TF-IDF</span></a>
-    </li>
-
-    <!-- Nav Item - Utilities Collapse Menu -->
-    <li class="nav-item {% if request.resolver_match.url_name|slice:0:5 == 'data_">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMenu"
-            aria-expanded="true" aria-controls="collapseUtilities">
-            <i class="fas fa-fw fa-solid fa-hourglass-half"></i>
-            <span>Data</span>
-        </a>
-        <div id="collapseMenu" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Menu:</h6>
-                <a class="collapse-item {% if request.resolver_match.url_name == 'data_train" href="{% url 'data_train' %}">Data Latih</a>
-                <a class="collapse-item {% if request.resolver_match.url_name == 'data_test" href="{% url 'data_test' %}">Data Uji</a>
-            </div>
-        </div>
-    </li>
 
     <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
@@ -104,12 +81,12 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Menu:</h6>
-                <a class="collapse-item" href="{% url 'naive_bayes_index' %}">Naive Bayes</a>
-                <a class="collapse-item" href="utilities-border.html">Support Vector Machine</a>
+                <a class="collapse-item" href="{% url 'pemodelan:naive_bayes_view' %}">Naive Bayes</a>
+                <a class="collapse-item" href="">Support Vector Machine</a>
             </div>
         </div>
     </li>
-
+    {% comment %} 
     <!-- Nav Item -->
     <li class="nav-item">
         <a class="nav-link" href="charts.html">
