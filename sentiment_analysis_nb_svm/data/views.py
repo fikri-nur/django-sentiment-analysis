@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from .forms import SplitDataForm
+from .forms import SplitDataPilihModel
 
 from .models import TrainData, TestData, TrainFeatures, TestFeatures
 from dataset.models import Dataset
@@ -12,20 +12,25 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+from pemodelan.views import train_and_evaluate_model
 # Create your views here.
 @login_required
 def indexView(request):
     if request.method == 'POST':
-        form = SplitDataForm(request.POST)
+        form = SplitDataPilihModel(request.POST)
         if form.is_valid():
             test_size = form.cleaned_data['test_size']
-            return redirect('data:split_data', test_size=test_size)
+            model = form.cleaned_data['model']
+            split_data(test_size)
+            if model == 'naive_bayes':
+                return redirect('pemodelan:naive_bayes_view')
+            return redirect('data:indexTest_view')
     else:
-        form = SplitDataForm()
+        form = SplitDataPilihModel()
 
     return render(request, 'data/index.html', {'form': form})   
 
-def split_data(request, test_size):
+def split_data(test_size):
     test_size = float(test_size)
     preprocessings = Preprocessing.objects.all()
     stemmed_text = preprocessings.values_list('stemmed_text', flat=True)
@@ -40,29 +45,11 @@ def split_data(request, test_size):
     
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=42)
     
-    vectorizer = TfidfVectorizer()
-    X_train_tfidf = vectorizer.fit_transform(X_train).toarray()
-    X_test_tfidf = vectorizer.transform(X_test).toarray()
-    
     TrainData.objects.all().delete()
     TestData.objects.all().delete()
-    TrainFeatures.objects.all().delete()
-    TestFeatures.objects.all().delete()
     
     TrainData.objects.bulk_create([TrainData(text=text, label=label) for text, label in zip(X_train, y_train)])
     TestData.objects.bulk_create([TestData(text=text, label=label) for text, label in zip(X_test, y_test)])
-    
-    TrainFeatures.objects.bulk_create([TrainFeatures(features=features, label=label) for features, label in zip(X_train_tfidf, y_train)])
-    TestFeatures.objects.bulk_create([TestFeatures(features=features, label=label) for features, label in zip(X_test_tfidf, y_test)])
-    
-    context = {
-        'X_train': X_train,
-        'X_test': X_test,
-        'y_train': y_train,
-        'y_test': y_test,
-        'test_size': test_size,
-    }
-    return redirect('data:indexTrain_view')
 
 
 def indexTrainView(request):

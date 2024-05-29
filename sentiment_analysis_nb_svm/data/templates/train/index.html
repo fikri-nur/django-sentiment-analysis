@@ -47,7 +47,11 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ item.text }}</td>
-                        <td>{{ item.label }}</td>
+                        {% if item.label == 0 %}
+                        <td><span class="badge badge-danger">Negatif</span></td>
+                        {% elif item.label == 1 %}
+                        <td><span class="badge badge-success">Positif</span></td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                     {% else %}
