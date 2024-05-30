@@ -68,5 +68,5 @@ def predictSentimentView(request):
     return render(
         request,
         "pengujian/index.html",
-        {"prediction": prediction, "evaluations": evaluations},
+        {"prediction": prediction, "evaluations": evaluations, 'input_text': input_text, 'model': selected_evaluation},
     )

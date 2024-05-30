@@ -15,7 +15,7 @@
                     <select class="form-control" id="modelSelect" name="model_id" required>
                         <option value="" selected disabled>Select a model</option>
                         {% for evaluation in evaluations %}
-                            <option value="{{ evaluation.id }}">{{ evaluation.metode }} - {{ evaluation.created_at }}</option>
+                            <option value="{{ evaluation.id }}">{{ evaluation.metode }} | Latih: {{ evaluation.train_size }} | Uji: {{ evaluation.test_size }} | A: {{ evaluation.accuracy|floatformat:2 }} | P: {{ evaluation.precision|floatformat:2 }} | R: {{ evaluation.recall|floatformat:2 }} | F1: {{ evaluation.f1_score|floatformat:2 }}</option>
                         {% endfor %}
                     </select>
                     <div class="form-group">
@@ -27,8 +27,27 @@
             </form>        
             {% if prediction %}
             <hr>
-            <h6 class="mt-4">Prediction Result</h6>
-            <p>Sentiment: <strong>{{ prediction }}</strong></p>
+            <table class="table table-bordered">
+                <tr>
+                    <td colspan="2" class="text-center text-dark"><strong>Hasil Prediksi</strong></td>
+                </tr>
+                <tr>
+                    <td class="text-start">Model:</td>
+                    <td class="text-center"><strong class="text-primary">{{ model.metode }} | Latih: {{ model.train_size }} | Uji: {{ model.test_size }} | Accuracy: {{ model.accuracy|floatformat:2 }} | Precision: {{ model.precision|floatformat:2 }} | Recall: {{ model.recall|floatformat:2 }} | F1-Score: {{ model.f1_score|floatformat:2 }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="text-start">Text:</td>
+                    <td class="text-justify"><strong class="text-secondary">{{ input_text }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="text-start">Prediksi:</td>
+                    {% if prediction == 'Negatif' %}
+                        <td class="text-center"><strong class="text-danger">{{ prediction }}</strong></td>
+                    {% else %}
+                    <td class="text-center"><strong class="text-success">{{ prediction }}</strong></td>
+                    {% endif %}
+                </tr>
+            </table>
             {% endif %}
         </div>
     </div>

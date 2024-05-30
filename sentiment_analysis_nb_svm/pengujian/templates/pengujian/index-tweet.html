@@ -29,7 +29,7 @@
                     <select class="form-control" id="modelSelect" name="model_id" required>
                         <option value="" selected disabled>Select a model</option>
                         {% for evaluation in evaluations %}
-                            <option value="{{ evaluation.id }}">{{ evaluation.metode }} - {{ evaluation.created_at }}</option>
+                            <option value="{{ evaluation.id }}">{{ evaluation.metode }} | Latih: {{ evaluation.train_size }} | Uji: {{ evaluation.test_size }} | A: {{ evaluation.accuracy|floatformat:2 }} | P: {{ evaluation.precision|floatformat:2 }} | R: {{ evaluation.recall|floatformat:2 }} | F1: {{ evaluation.f1_score|floatformat:2 }}</option>
                         {% endfor %}
                     </select>
                 </div>

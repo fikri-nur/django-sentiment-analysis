@@ -3,11 +3,16 @@ from django import forms
 
 
 class SplitDataPilihMetode(forms.Form):
+    pilihan = [
+        ('0.1', '90% Data Latih - 10% Data Uji'),
+        ('0.2', '80% Data Latih - 20% Data Uji'),
+        ('0.3', '70% Data Latih - 30% Data Uji'),
+    ]
     test_size = forms.ChoiceField(
-        label="Persentase Data Uji",
-        choices=[(str(i/10), str(i/10)) for i in range(1, 4)],
+        label="Persentase Data Latih dan Data Uji",
+        choices=pilihan,
         initial='0.1',
-        help_text="Pilih nilai antara 0.1 dan 0.3 dengan kelipatan 0.1",
+        help_text="Pilih persentase data latih dan data uji",
         widget=forms.Select(attrs={'class': 'form-control'})
     )
     
@@ -18,5 +23,6 @@ class SplitDataPilihMetode(forms.Form):
             ('svm', 'SVM'),
         ],
         initial='naive_bayes',
+        help_text="Pilih model yang akan digunakan",
         widget=forms.Select(attrs={'class': 'form-control'})
     )

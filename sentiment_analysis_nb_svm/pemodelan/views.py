@@ -53,21 +53,21 @@ def train_and_evaluate_nb(request):
     X_train_tfidf = vectorizer.fit_transform(X_train).toarray()
     X_test_tfidf = vectorizer.transform(X_test).toarray()
 
-    TrainFeatures.objects.all().delete()
-    TestFeatures.objects.all().delete()
+    # TrainFeatures.objects.all().delete()
+    # TestFeatures.objects.all().delete()
 
-    TrainFeatures.objects.bulk_create(
-        [
-            TrainFeatures(features=features, label=label)
-            for features, label in zip(X_train_tfidf, y_train)
-        ]
-    )
-    TestFeatures.objects.bulk_create(
-        [
-            TestFeatures(features=features, label=label)
-            for features, label in zip(X_test_tfidf, y_test)
-        ]
-    )
+    # TrainFeatures.objects.bulk_create(
+    #     [
+    #         TrainFeatures(features=features, label=label)
+    #         for features, label in zip(X_train_tfidf, y_train)
+    #     ]
+    # )
+    # TestFeatures.objects.bulk_create(
+    #     [
+    #         TestFeatures(features=features, label=label)
+    #         for features, label in zip(X_test_tfidf, y_test)
+    #     ]
+    # )
 
     # Train Naive Bayes model
     model = MultinomialNB()
@@ -175,21 +175,21 @@ def train_and_evaluate_svm(request):
     X_train_tfidf = vectorizer.fit_transform(X_train).toarray()
     X_test_tfidf = vectorizer.transform(X_test).toarray()
 
-    TrainFeatures.objects.all().delete()
-    TestFeatures.objects.all().delete()
+    # TrainFeatures.objects.all().delete()
+    # TestFeatures.objects.all().delete()
 
-    TrainFeatures.objects.bulk_create(
-        [
-            TrainFeatures(features=features, label=label)
-            for features, label in zip(X_train_tfidf, y_train)
-        ]
-    )
-    TestFeatures.objects.bulk_create(
-        [
-            TestFeatures(features=features, label=label)
-            for features, label in zip(X_test_tfidf, y_test)
-        ]
-    )
+    # TrainFeatures.objects.bulk_create(
+    #     [
+    #         TrainFeatures(features=features, label=label)
+    #         for features, label in zip(X_train_tfidf, y_train)
+    #     ]
+    # )
+    # TestFeatures.objects.bulk_create(
+    #     [
+    #         TestFeatures(features=features, label=label)
+    #         for features, label in zip(X_test_tfidf, y_test)
+    #     ]
+    # )
 
     # Hyperparameter tuning for LinearSVC
     best_accuracy = 0
