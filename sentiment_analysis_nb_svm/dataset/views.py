@@ -4,10 +4,14 @@ import pandas as pd
 from .forms import UploadFileForm
 from django.contrib.auth.decorators import login_required
 
+import os
+import shutil
+
 from .models import Dataset
 from data.models import TrainData, TestData
 from preprocessing.models import Preprocessing, WordCloud
 from evaluasi.models import Evaluation
+
 
 @login_required
 # Create your views here.
@@ -55,7 +59,44 @@ def clear_all_data(request):
     WordCloud.objects.all().delete()
     Evaluation.objects.all().delete()
     
+    # JIka tabel wordcloud kosong, hapus wordcloud yang tersimpan dalam folder static/img/worclouds
+    if WordCloud.objects.count() == 0:
+        
+        folder = 'static/img/wordclouds'
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print(f'Failed to delete {file_path}. Reason: {e}')
+                
+    # Jika tabel evaluation kosong, hapus file yang tersimpan dalam folder pemodelan/static/naivebayes dan pemodelan/static/svm
+    if Evaluation.objects.count() == 0:
+        folder = 'pemodelan/static/naivebayes'
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print(f'Failed to delete {file_path}. Reason: {e}')
+        
+        folder = 'pemodelan/static/svm'
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print(f'Failed to delete {file_path}. Reason: {e}')
+                
     if Dataset.objects.count() == 0 or TrainData.objects.count() == 0 or TestData.objects.count() == 0 or Preprocessing.objects.count() == 0 or WordCloud.objects.count() == 0 or Evaluation.objects.count() == 0:
-        print('Semua tabel telah kosong')
-    messages.success(request, 'Semua data telah dihapus.')
+        messages.success(request, 'Semua data telah dihapus.')
     return redirect('dataset:index')
