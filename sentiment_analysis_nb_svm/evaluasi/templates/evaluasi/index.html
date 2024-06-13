@@ -30,8 +30,8 @@
                     <tr>
                         <th>#</th>
                         <th>Metode</th>
-                        <th>% Data Latih</th>
-                        <th>% Data Uji</th>
+                        <th>Data Latih</th>
+                        <th>Data Uji</th>
                         <th>Accuracy</th>
                         <th>Precision</th>
                         <th>Recall</th>
@@ -44,8 +44,8 @@
                     <tr>
                         <th>#</th>
                         <th>Metode</th>
-                        <th>% Data Latih</th>
-                        <th>% Data Uji</th>
+                        <th>Data Latih</th>
+                        <th>Data Uji</th>
                         <th>Accuracy</th>
                         <th>Precision</th>
                         <th>Recall</th>
@@ -60,16 +60,23 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ data.metode }}</td>
-                                <td>{{ data.train_size|floatformat:2 }}</td>
-                                <td>{{ data.test_size|floatformat:2 }}</td>
-                                <td>{{ data.accuracy|floatformat:2 }}</td>
-                                <td>{{ data.precision|floatformat:2 }}</td>
-                                <td>{{ data.recall|floatformat:2 }}</td>
-                                <td>{{ data.f1_score|floatformat:2 }}</td>
+                                <td>{{ data.train_size }}</td>
+                                <td>{{ data.test_size }}</td>
+                                <td>{{ data.accuracy }}</td>
+                                <td>{{ data.precision }}</td>
+                                <td>{{ data.recall }}</td>
+                                <td>{{ data.f1_score }}</td>
                                 <td>{{ data.created_at|date:"H:i, d F Y" }}</td>
-                                <td><a href="" class="btn btn-primary btn-sm">
-                                    <i class="fa-solid fa-circle-info"></i></i>
-                                </a></td>
+                                <td>
+                                <div>
+                                    <a href="{% url 'evaluasi:detail_view' data.id %}" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </a>
+                                    <a href="{% url 'evaluasi:delete_view' data.id %}" class="btn btn-danger btn-sm">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                                </td>
                             </tr>
                         {% endfor %}
                     {% endif %}
