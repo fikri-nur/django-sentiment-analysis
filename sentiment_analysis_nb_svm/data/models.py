@@ -8,11 +8,3 @@ class TrainData(models.Model):
 class TestData(models.Model):
     text = models.TextField()
     label = models.IntegerField()
-
-class TrainFeatures(models.Model):
-    features = models.BinaryField()
-    label = models.IntegerField()
-
-class TestFeatures(models.Model):
-    features = models.BinaryField()
-    label = models.IntegerField()

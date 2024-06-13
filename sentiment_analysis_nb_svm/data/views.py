@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import SplitDataPilihMetode
 
-from .models import TrainData, TestData, TrainFeatures, TestFeatures
+from .models import TrainData, TestData
 from dataset.models import Dataset
 from preprocessing.models import Preprocessing
 
@@ -56,7 +56,7 @@ def split_data(test_size):
     x = data_clean['stemmed_text']
     y = data_clean['label']
     
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=17)
     
     TrainData.objects.all().delete()
     TestData.objects.all().delete()
@@ -90,38 +90,4 @@ def indexTestView(request):
         'empty': empty,
     }
     return render(request, 'test/index.html', context)
-
-def vectorize_data(request):
-    train_features = TrainFeatures.objects.all()
-    test_features = TestFeatures.objects.all()
-    
-    X_train_tfidf = [np.frombuffer(feature.features, dtype=np.float64) for feature in train_features]
-    y_train = [feature.label for feature in train_features]
-    
-    X_test_tfidf = [np.frombuffer(feature.features, dtype=np.float64) for feature in test_features]
-    y_test = [feature.label for feature in test_features]
-    
-    # Calculate summary statistics
-    X_train_summary = {
-        'mean': np.mean(X_train_tfidf, axis=0),
-        'std': np.std(X_train_tfidf, axis=0),
-        'min': np.min(X_train_tfidf, axis=0),
-        'max': np.max(X_train_tfidf, axis=0)
-    }
-    
-    X_test_summary = {
-        'mean': np.mean(X_test_tfidf, axis=0),
-        'std': np.std(X_test_tfidf, axis=0),
-        'min': np.min(X_test_tfidf, axis=0),
-        'max': np.max(X_test_tfidf, axis=0)
-    }
-    
-    context = {
-        'X_train_summary': X_train_summary,
-        'y_train': y_train,
-        'X_test_summary': X_test_summary,
-        'y_test': y_test,
-    }
-    
-    return render(request, 'data/vectorize_data.html', context)
 
