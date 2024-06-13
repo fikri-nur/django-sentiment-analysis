@@ -8,12 +8,12 @@ urlpatterns = [
     # Casefolding
     path("casefolding", views.casefoldingView, name="casefolding_view"),
     path("process_casefolding", views.process_casefolding, name="process_casefolding"),
-    # Tokenization
-    path("tokenization", views.tokenizationView, name="tokenization_view"),
-    path("process_tokenization", views.process_tokenization, name="process_tokenization"),
     # Normalization
     path("normalization", views.normalizationView, name="normalization_view"),
     path("process_normalization", views.process_normalization, name="process_normalization"),
+    # Tokenization
+    path("tokenization", views.tokenizationView, name="tokenization_view"),
+    path("process_tokenization", views.process_tokenization, name="process_tokenization"),
     # Stopword
     path("stopword", views.stopwordView, name="stopword_view"),
     path("process_stopword", views.process_stopword, name="process_stopword"),
