@@ -5,7 +5,7 @@ from .forms import UploadFileForm
 from django.contrib.auth.decorators import login_required
 
 from .models import Dataset
-from data.models import TrainData, TestData, TrainFeatures, TestFeatures
+from data.models import TrainData, TestData
 from preprocessing.models import Preprocessing, WordCloud
 from evaluasi.models import Evaluation
 
@@ -52,12 +52,10 @@ def clear_all_data(request):
     Dataset.objects.all().delete()
     TrainData.objects.all().delete()
     TestData.objects.all().delete()
-    TrainFeatures.objects.all().delete()
-    TestFeatures.objects.all().delete()
     WordCloud.objects.all().delete()
     Evaluation.objects.all().delete()
     
-    if Dataset.objects.count() == 0 or TrainData.objects.count() == 0 or TestData.objects.count() == 0 or TrainFeatures.objects.count() == 0 or TestFeatures.objects.count() == 0 or Preprocessing.objects.count() == 0 or WordCloud.objects.count() == 0 or Evaluation.objects.count() == 0:
+    if Dataset.objects.count() == 0 or TrainData.objects.count() == 0 or TestData.objects.count() == 0 or Preprocessing.objects.count() == 0 or WordCloud.objects.count() == 0 or Evaluation.objects.count() == 0:
         print('Semua tabel telah kosong')
     messages.success(request, 'Semua data telah dihapus.')
     return redirect('dataset:index')

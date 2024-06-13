@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from data.models import TrainData, TestData, TrainFeatures, TestFeatures
+from data.models import TrainData, TestData
 from evaluasi.models import Evaluation
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -52,22 +52,6 @@ def train_and_evaluate_nb(request):
     vectorizer = TfidfVectorizer()
     X_train_tfidf = vectorizer.fit_transform(X_train).toarray()
     X_test_tfidf = vectorizer.transform(X_test).toarray()
-
-    # TrainFeatures.objects.all().delete()
-    # TestFeatures.objects.all().delete()
-
-    # TrainFeatures.objects.bulk_create(
-    #     [
-    #         TrainFeatures(features=features, label=label)
-    #         for features, label in zip(X_train_tfidf, y_train)
-    #     ]
-    # )
-    # TestFeatures.objects.bulk_create(
-    #     [
-    #         TestFeatures(features=features, label=label)
-    #         for features, label in zip(X_test_tfidf, y_test)
-    #     ]
-    # )
 
     # Train Naive Bayes model
     model = MultinomialNB()
@@ -174,23 +158,7 @@ def train_and_evaluate_svm(request):
     vectorizer = TfidfVectorizer()
     X_train_tfidf = vectorizer.fit_transform(X_train).toarray()
     X_test_tfidf = vectorizer.transform(X_test).toarray()
-
-    # TrainFeatures.objects.all().delete()
-    # TestFeatures.objects.all().delete()
-
-    # TrainFeatures.objects.bulk_create(
-    #     [
-    #         TrainFeatures(features=features, label=label)
-    #         for features, label in zip(X_train_tfidf, y_train)
-    #     ]
-    # )
-    # TestFeatures.objects.bulk_create(
-    #     [
-    #         TestFeatures(features=features, label=label)
-    #         for features, label in zip(X_test_tfidf, y_test)
-    #     ]
-    # )
-
+    
     # Hyperparameter tuning for LinearSVC
     best_accuracy = 0
     best_c = 0

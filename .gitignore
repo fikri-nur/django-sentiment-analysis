@@ -142,5 +142,3 @@ GitHub.sublime-settings
 sentiment_analysis_nb_svm/pemodelan/static/naivebayes/
 sentiment_analysis_nb_svm/pemodelan/static/svm/
 sentiment_analysis_nb_svm/static/img/wordclouds/
-sentiment_analysis_nb_svm/static/img/wordclouds/negatif_wordcloud.png
-sentiment_analysis_nb_svm/static/img/wordclouds/positif_wordcloud.png
