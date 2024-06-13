@@ -7,6 +7,10 @@ import shutil
 def indexView(request):
     evalDatas = Evaluation.objects.all()
     
+    empty = True
+    if len(evalDatas) > 0:
+        empty = False
+        
     for eval in evalDatas:
         eval.test_size = round(eval.test_size, 1)
         eval.train_size = round(eval.train_size, 1)
@@ -15,14 +19,17 @@ def indexView(request):
         eval.recall = round(eval.recall, 2)
         eval.f1_score = round(eval.f1_score, 2)
         
-        eval.test_size = f"{eval.test_size * 100}%"
-        eval.train_size = f"{eval.train_size * 100}%"
-        eval.accuracy = f"{eval.accuracy * 100}%"
-        eval.precision = f"{eval.precision * 100}%"
-        eval.recall = f"{eval.recall * 100}%"
-        eval.f1_score = f"{eval.f1_score * 100}%"
-        
-    return render(request, 'evaluasi/index.html', {'evaluations': evalDatas})
+        eval.test_size = f"{eval.test_size * 100:.1f}".rstrip('0').rstrip('.')
+        eval.train_size = f"{eval.train_size * 100:.1f}".rstrip('0').rstrip('.')
+        eval.accuracy = f"{eval.accuracy * 100:.2f}".rstrip('0').rstrip('.')
+        eval.precision = f"{eval.precision * 100:.2f}".rstrip('0').rstrip('.')
+        eval.recall = f"{eval.recall * 100:.2f}".rstrip('0').rstrip('.')
+        eval.f1_score = f"{eval.f1_score * 100:.2f}".rstrip('0').rstrip('.')
+    context = {
+        'evaluations': evalDatas,
+        'empty': empty
+    }
+    return render(request, 'evaluasi/index.html', context)
 
 def detailView(request, id):
     evalData = Evaluation.objects.get(id=id)
