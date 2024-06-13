@@ -141,3 +141,4 @@ GitHub.sublime-settings
 # Ignore static
 sentiment_analysis_nb_svm/pemodelan/static/naivebayes/
 sentiment_analysis_nb_svm/pemodelan/static/svm/
+sentiment_analysis_nb_svm/static/img/wordclouds/
