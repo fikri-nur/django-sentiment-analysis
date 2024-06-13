@@ -26,7 +26,35 @@ import joblib
 def naiveBayesView(request):
     train_data = TrainData.objects.all()
     test_data = TestData.objects.all()
-    context = {}
+    
+    # Get naive bayes evaluation data
+    evalNB = Evaluation.objects.filter(metode='Naive Bayes')
+    
+    # Ubah digit di belakang koma dan ubah menjadi persen (%)
+    for eval in evalNB:
+        eval.test_size = round(eval.test_size, 1)
+        eval.train_size = round(eval.train_size, 1)
+        eval.accuracy = round(eval.accuracy, 2)
+        eval.precision = round(eval.precision, 2)
+        eval.recall = round(eval.recall, 2)
+        eval.f1_score = round(eval.f1_score, 2)
+        
+        eval.test_size = f"{eval.test_size * 100}%"
+        eval.train_size = f"{eval.train_size * 100}%"
+        eval.accuracy = f"{eval.accuracy * 100}%"
+        eval.precision = f"{eval.precision * 100}%"
+        eval.recall = f"{eval.recall * 100}%"
+        eval.f1_score = f"{eval.f1_score * 100}%"
+        
+    empty = True
+    if len(evalNB) > 0:
+        empty = False
+        
+    context = {
+        'empty': empty,
+        'evaluations': evalNB,
+    }
+    
     if len(train_data) == 0 or len(test_data) == 0:
         context['data'] = 0
         
@@ -38,11 +66,39 @@ def naiveBayesView(request):
 def svmView(request):
     train_data = TrainData.objects.all()
     test_data = TestData.objects.all()
-    context = {}
+    
+        # Get naive bayes evaluation data
+    evalSVM = Evaluation.objects.filter(metode='SVM')
+    
+    # Ubah digit di belakang koma dan ubah menjadi persen (%)
+    for eval in evalSVM:
+        eval.test_size = round(eval.test_size, 1)
+        eval.train_size = round(eval.train_size, 1)
+        eval.accuracy = round(eval.accuracy, 2)
+        eval.precision = round(eval.precision, 2)
+        eval.recall = round(eval.recall, 2)
+        eval.f1_score = round(eval.f1_score, 2)
+        
+        eval.test_size = f"{eval.test_size * 100}%"
+        eval.train_size = f"{eval.train_size * 100}%"
+        eval.accuracy = f"{eval.accuracy * 100}%"
+        eval.precision = f"{eval.precision * 100}%"
+        eval.recall = f"{eval.recall * 100}%"
+        eval.f1_score = f"{eval.f1_score * 100}%"
+        
+    empty = True
+    if len(evalSVM) > 0:
+        empty = False
+        
+    context = {
+        'empty': empty,
+        'evaluations': evalSVM,
+    }
+    
     if len(train_data) == 0 or len(test_data) == 0:
         context['data'] = 0
 
-    context['title'] = 'Pemodelan Naive Bayes'
+    context['title'] = 'Pemodelan SVM'
     return render(request, "svm/index.html", context)
 
 
@@ -133,10 +189,49 @@ def train_and_evaluate_nb(request):
     
     latest_evaluation = Evaluation.objects.latest("created_at")
     cm_path = latest_evaluation.confusion_matrix_path
-    # Ubah cm path dari D:\Kuliah\Semester 8\Sistem\python\sentiment_analy... ke /static/naivebayes/20210929_123456/confusion_matrix.png
     cm_path = cm_path.replace(current_dir, "").replace("\\", "/").replace("/static/", "")
+    
+    # Ubah digit di belakang koma
+    latest_evaluation.test_size = round(latest_evaluation.test_size, 1)
+    latest_evaluation.train_size = round(latest_evaluation.train_size, 1)
+    latest_evaluation.accuracy = round(latest_evaluation.accuracy, 2)
+    latest_evaluation.precision = round(latest_evaluation.precision, 2)
+    latest_evaluation.recall = round(latest_evaluation.recall, 2)
+    latest_evaluation.f1_score = round(latest_evaluation.f1_score, 2)
+    
+    # Ubah menjadi persen (%)
+    latest_evaluation.test_size = f"{latest_evaluation.test_size * 100}%"
+    latest_evaluation.train_size = f"{latest_evaluation.train_size * 100}%"
+    latest_evaluation.accuracy = f"{latest_evaluation.accuracy * 100}%"
+    latest_evaluation.precision = f"{latest_evaluation.precision * 100}%"
+    latest_evaluation.recall = f"{latest_evaluation.recall * 100}%"
+    latest_evaluation.f1_score = f"{latest_evaluation.f1_score * 100}%"
+    
+    evalNB = Evaluation.objects.filter(metode='Naive Bayes')
+    # Ubah digit di belakang koma dan ubah menjadi persen (%)
+    for eval in evalNB:
+        eval.test_size = round(eval.test_size, 1)
+        eval.train_size = round(eval.train_size, 1)
+        eval.accuracy = round(eval.accuracy, 2)
+        eval.precision = round(eval.precision, 2)
+        eval.recall = round(eval.recall, 2)
+        eval.f1_score = round(eval.f1_score, 2)
+        
+        eval.test_size = f"{eval.test_size * 100}%"
+        eval.train_size = f"{eval.train_size * 100}%"
+        eval.accuracy = f"{eval.accuracy * 100}%"
+        eval.precision = f"{eval.precision * 100}%"
+        eval.recall = f"{eval.recall * 100}%"
+        eval.f1_score = f"{eval.f1_score * 100}%"
+        
+    empty = True
+    if len(evalNB) > 0:
+        empty = False
+        
     context = {
         'title': 'Pemodelan Naive Bayes',
+        'empty': empty,
+        'evaluations': evalNB,
         'isTrue': True,
         'metode': latest_evaluation.metode,
         'test_size': latest_evaluation.test_size,
@@ -252,10 +347,49 @@ def train_and_evaluate_svm(request):
 
     latest_evaluation = Evaluation.objects.latest("created_at")
     cm_path = latest_evaluation.confusion_matrix_path
-    # Ubah cm path dari D:\Kuliah\Semester 8\Sistem\python\sentiment_analy... ke /static/naivebayes/20210929_123456/confusion_matrix.png
     cm_path = cm_path.replace(current_dir, "").replace("\\", "/").replace("/static/", "")
+    
+    # Ubah digit di belakang koma
+    latest_evaluation.test_size = round(latest_evaluation.test_size, 1)
+    latest_evaluation.train_size = round(latest_evaluation.train_size, 1)
+    latest_evaluation.accuracy = round(latest_evaluation.accuracy, 2)
+    latest_evaluation.precision = round(latest_evaluation.precision, 2)
+    latest_evaluation.recall = round(latest_evaluation.recall, 2)
+    latest_evaluation.f1_score = round(latest_evaluation.f1_score, 2)
+    
+    # Ubah menjadi persen (%)
+    latest_evaluation.test_size = f"{latest_evaluation.test_size * 100}%"
+    latest_evaluation.train_size = f"{latest_evaluation.train_size * 100}%"
+    latest_evaluation.accuracy = f"{latest_evaluation.accuracy * 100}%"
+    latest_evaluation.precision = f"{latest_evaluation.precision * 100}%"
+    latest_evaluation.recall = f"{latest_evaluation.recall * 100}%"
+    latest_evaluation.f1_score = f"{latest_evaluation.f1_score * 100}%"
+    
+    evalSVM = Evaluation.objects.filter(metode='SVM')
+    # Ubah digit di belakang koma dan ubah menjadi persen (%)
+    for eval in evalSVM:
+        eval.test_size = round(eval.test_size, 1)
+        eval.train_size = round(eval.train_size, 1)
+        eval.accuracy = round(eval.accuracy, 2)
+        eval.precision = round(eval.precision, 2)
+        eval.recall = round(eval.recall, 2)
+        eval.f1_score = round(eval.f1_score, 2)
+        
+        eval.test_size = f"{eval.test_size * 100}%"
+        eval.train_size = f"{eval.train_size * 100}%"
+        eval.accuracy = f"{eval.accuracy * 100}%"
+        eval.precision = f"{eval.precision * 100}%"
+        eval.recall = f"{eval.recall * 100}%"
+        eval.f1_score = f"{eval.f1_score * 100}%"
+        
+    empty = True
+    if len(evalSVM) > 0:
+        empty = False
+        
     context = {
         'title': 'Pemodelan Naive Bayes',
+        'empty': empty,
+        'evaluations': evalSVM,
         'isTrue': True,
         'metode': latest_evaluation.metode,
         'test_size': latest_evaluation.test_size,
