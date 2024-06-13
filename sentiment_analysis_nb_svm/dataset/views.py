@@ -33,8 +33,12 @@ def upload_file(request):
         if form.is_valid():
             file = request.FILES['file']
             try:
-                df = pd.read_excel(file)
-                print(df)
+                # Cek extension file yang diupload csv atau xlsx, jika csv maka gunakan read_csv, jika xlsx maka gunakan read_excel
+                if file.name.endswith('.csv'):
+                    df = pd.read_csv(file, delimiter=';')
+                elif file.name.endswith('.xlsx'):
+                    df = pd.read_excel(file)
+                    
                 for _, row in df.iterrows():
                     Dataset.objects.create(
                         username=row['username'],

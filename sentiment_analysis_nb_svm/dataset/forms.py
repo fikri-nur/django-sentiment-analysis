@@ -5,7 +5,7 @@ class UploadFileForm(forms.Form):
         widget=forms.ClearableFileInput(
             attrs={
                 "class": "custom-file-input",
-                "accept": ".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "accept": ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "id": "customFile",
             }
         ),
