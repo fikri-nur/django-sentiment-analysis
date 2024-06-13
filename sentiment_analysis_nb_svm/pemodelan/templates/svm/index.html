@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block styles %}
-<style>
+    <style>
         .custom-table {
             color: #333;
             border-color: #ddd;
@@ -20,7 +20,7 @@
         class="card-header d-flex justify-content-between align-items-center py-3">
         <h6 class="m-0 font-weight-bold text-primary">Support Vector Machine</h6>
         <div class="text-right">
-            {% if not isTrue %}
+            {% if not isTrue and data != 0 %}
             <a href="{% url 'pemodelan:train_and_evaluate_svm' %}"
                 class="btn btn-success">
                 <i class="fas fa-fw fa-solid fa-spinner"></i> Latih dan Evaluasi
@@ -65,6 +65,10 @@
                 <img src="{% static confusion_matrix %}" alt="Confusion Matrix">
             </div>
         </div>
+        {% elif data == 0 %}
+            <div class="alert alert-warning" role="alert">
+                Anda Belum Punya Data Latih atau Data Uji.
+            </div>
         {% else %}
         <div class="alert alert-warning" role="alert">
             Latih Model Untuk Melihat Hasil.

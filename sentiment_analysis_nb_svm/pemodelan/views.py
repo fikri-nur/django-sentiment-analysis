@@ -24,17 +24,25 @@ import joblib
 
 @login_required
 def naiveBayesView(request):
-    context = {
-        'title': 'Pemodelan Naive Bayes',
-    }
+    train_data = TrainData.objects.all()
+    test_data = TestData.objects.all()
+    context = {}
+    if len(train_data) == 0 or len(test_data) == 0:
+        context['data'] = 0
+        
+    context['title'] = 'Pemodelan Naive Bayes'
     return render(request, "naivebayes/index.html", context)
 
 
 @login_required
 def svmView(request):
-    context = {
-        'title': 'Pemodelan SVM',
-    }
+    train_data = TrainData.objects.all()
+    test_data = TestData.objects.all()
+    context = {}
+    if len(train_data) == 0 or len(test_data) == 0:
+        context['data'] = 0
+
+    context['title'] = 'Pemodelan Naive Bayes'
     return render(request, "svm/index.html", context)
 
 
