@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Evaluation
-import os
 import shutil
+import pandas as pd
 # Create your views here.
 
 def indexView(request):
@@ -50,7 +50,10 @@ def detailView(request, id):
     
     evalData.confusion_matrix_path = evalData.confusion_matrix_path.replace("D:\\Kuliah\\Semester 8\\Sistem\\python\\sentiment_analysis_nb_svm\\pemodelan\\static", "")
     
-    return render(request, 'evaluasi/detail.html', {'evaluation': evalData})
+    df = pd.read_csv(evalData.csv_path)
+    # change df to queryset
+    df = df.to_dict('records')
+    return render(request, 'evaluasi/detail.html', {'evaluation': evalData, 'df': df})
 
 def deleteView(request, id):
     evalData = Evaluation.objects.get(id=id)
