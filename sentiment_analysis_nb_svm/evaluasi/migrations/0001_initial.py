@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
                 ('precision', models.FloatField()),
                 ('recall', models.FloatField()),
                 ('f1_score', models.FloatField()),
+                ('csv_path', models.CharField(max_length=255)),
                 ('confusion_matrix_path', models.CharField(max_length=255)),
                 ('model_path', models.CharField(max_length=255)),
                 ('vectorizer_path', models.CharField(max_length=255)),
