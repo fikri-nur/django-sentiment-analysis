@@ -21,44 +21,23 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 import joblib
+import csv
+import pandas as pd
 
 @login_required
 def naiveBayesView(request):
     train_data = TrainData.objects.all()
     test_data = TestData.objects.all()
     
-    # Get naive bayes evaluation data
-    evalNB = Evaluation.objects.filter(metode='Naive Bayes')
-    
-    # Ubah digit di belakang koma dan ubah menjadi persen (%)
-    for eval in evalNB:
-        eval.test_size = round(eval.test_size, 1)
-        eval.train_size = round(eval.train_size, 1)
-        eval.accuracy = round(eval.accuracy, 2)
-        eval.precision = round(eval.precision, 2)
-        eval.recall = round(eval.recall, 2)
-        eval.f1_score = round(eval.f1_score, 2)
-        
-        eval.test_size = f"{eval.test_size * 100}%"
-        eval.train_size = f"{eval.train_size * 100}%"
-        eval.accuracy = f"{eval.accuracy * 100}%"
-        eval.precision = f"{eval.precision * 100}%"
-        eval.recall = f"{eval.recall * 100}%"
-        eval.f1_score = f"{eval.f1_score * 100}%"
-        
-    empty = True
-    if len(evalNB) > 0:
-        empty = False
+    if len(train_data) == 0 or len(test_data) == 0:
+        data = 0 
+    else:
+        data = 1
         
     context = {
-        'empty': empty,
-        'evaluations': evalNB,
+        'title': 'Pemodelan Naive Bayes',
+        'data': data,
     }
-    
-    if len(train_data) == 0 or len(test_data) == 0:
-        context['data'] = 0
-        
-    context['title'] = 'Pemodelan Naive Bayes'
     return render(request, "naivebayes/index.html", context)
 
 
@@ -67,7 +46,7 @@ def svmView(request):
     train_data = TrainData.objects.all()
     test_data = TestData.objects.all()
     
-        # Get naive bayes evaluation data
+    # Get naive bayes evaluation data
     evalSVM = Evaluation.objects.filter(metode='SVM')
     
     # Ubah digit di belakang koma dan ubah menjadi persen (%)
@@ -111,7 +90,7 @@ def train_and_evaluate_nb(request):
     y_train = [data.label for data in train_data]
     X_test = [data.text for data in test_data]
     y_test = [data.label for data in test_data]
-
+    
     # Vectorizer
     vectorizer = TfidfVectorizer()
     X_train_tfidf = vectorizer.fit_transform(X_train).toarray()
@@ -122,8 +101,8 @@ def train_and_evaluate_nb(request):
     model.fit(X_train_tfidf, y_train)
 
     # Predict on test data
-    y_pred = model.predict(X_test_tfidf)
-
+    y_pred = model.predict(X_test_tfidf)    
+    
     # Evaluate model
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
@@ -160,7 +139,34 @@ def train_and_evaluate_nb(request):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(current_dir, "static/naivebayes/", now)
     os.makedirs(folder_path)
-
+    
+    # change array to predicted_label to list
+    predicted_label = y_pred
+    predicted_label = predicted_label.tolist()
+    
+    # change 1 to 'Positif' and 0 to 'Negatif'
+    for i in range(len(predicted_label)):
+        if predicted_label[i] == 1:
+            predicted_label[i] = 'Positif'
+        else:
+            predicted_label[i] = 'Negatif'
+    
+    # change array to actual_label to list
+    actual_label = y_test
+    for i in range(len(actual_label)):
+        if actual_label[i] == 1:
+            actual_label[i] = 'Positif'
+        else:
+            actual_label[i] = 'Negatif'
+    
+    # export predicted_test_data to csv
+    csv_path = os.path.join(folder_path, "predicted_test_data.csv")
+    with open(csv_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['text', 'actual_label', 'predicted_label'])
+        for i in range(len(X_test)):
+            writer.writerow([X_test[i], actual_label[i], predicted_label[i]])
+    
     # Save confusion matrix to file
     cm_path = os.path.join(folder_path, "confusion_matrix.png")
     with open(cm_path, "wb") as f:
@@ -206,32 +212,13 @@ def train_and_evaluate_nb(request):
     latest_evaluation.precision = f"{latest_evaluation.precision * 100}%"
     latest_evaluation.recall = f"{latest_evaluation.recall * 100}%"
     latest_evaluation.f1_score = f"{latest_evaluation.f1_score * 100}%"
-    
-    evalNB = Evaluation.objects.filter(metode='Naive Bayes')
-    # Ubah digit di belakang koma dan ubah menjadi persen (%)
-    for eval in evalNB:
-        eval.test_size = round(eval.test_size, 1)
-        eval.train_size = round(eval.train_size, 1)
-        eval.accuracy = round(eval.accuracy, 2)
-        eval.precision = round(eval.precision, 2)
-        eval.recall = round(eval.recall, 2)
-        eval.f1_score = round(eval.f1_score, 2)
+
         
-        eval.test_size = f"{eval.test_size * 100}%"
-        eval.train_size = f"{eval.train_size * 100}%"
-        eval.accuracy = f"{eval.accuracy * 100}%"
-        eval.precision = f"{eval.precision * 100}%"
-        eval.recall = f"{eval.recall * 100}%"
-        eval.f1_score = f"{eval.f1_score * 100}%"
-        
-    empty = True
-    if len(evalNB) > 0:
-        empty = False
-        
+    df = pd.read_csv(csv_path)
+    # change df to queryset
+    df = df.to_dict('records')
     context = {
         'title': 'Pemodelan Naive Bayes',
-        'empty': empty,
-        'evaluations': evalNB,
         'isTrue': True,
         'metode': latest_evaluation.metode,
         'test_size': latest_evaluation.test_size,
@@ -242,6 +229,7 @@ def train_and_evaluate_nb(request):
         "f1_score": latest_evaluation.f1_score,
         "created_at": latest_evaluation.created_at,
         "confusion_matrix": cm_path,
+        "df": df,
     }
 
     return render(request, "naivebayes/index.html", context)
