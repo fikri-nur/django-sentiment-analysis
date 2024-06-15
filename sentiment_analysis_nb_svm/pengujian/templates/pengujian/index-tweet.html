@@ -43,31 +43,43 @@
                     id="result-tweet-table" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>Text</th>
-                            <th>Original Label</th>
-                            <th>Predicted Label</th>
+                            <th>Label Aktual</th>
+                            <th>Label Prediksi</th>
+                            <th>Hasil</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
+                            <th>#</th>
                             <th>Text</th>
-                            <th>Original Label</th>
-                            <th>Predicted Label</th>
+                            <th>Label Aktual</th>
+                            <th>Label Prediksi</th>
+                            <th>Hasil</th>
                         </tr>
                     </tfoot>
                     <tbody>
                     {% for result in results %}
                         <tr>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{ result.text }}</td>
                             {% if result.original_label == 'Negatif' %}
-                            <td><span class="badge badge-danger">Negatif</span></td>
+                            <td><span class="badge badge-danger">NEGATIF</span></td>
                             {% elif result.original_label == 'Positif' %}
-                            <td><span class="badge badge-success">Positif</span></td>
+                            <td><span class="badge badge-success">POSITIF</span></td>
                             {% endif %}
+
                             {% if result.predicted_label == 'Negatif' %}
-                            <td><span class="badge badge-danger">Negatif</span></td>
+                            <td><span class="badge badge-danger">NEGATIF</span></td>
                             {% elif result.predicted_label == 'Positif' %}
-                            <td><span class="badge badge-success">Positif</span></td>
+                            <td><span class="badge badge-success">POSITIF</span></td>
+                            {% endif %}
+
+                            {% if result.original_label == result.predicted_label %}
+                            <td><span class="badge badge-success">BENAR</span></td>
+                            {% else %}
+                            <td><span class="badge badge-danger">SALAH</span></td>
                             {% endif %}
                         </tr>
                     {% endfor %}
