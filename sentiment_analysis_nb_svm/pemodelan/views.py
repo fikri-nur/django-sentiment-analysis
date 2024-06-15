@@ -46,38 +46,16 @@ def svmView(request):
     train_data = TrainData.objects.all()
     test_data = TestData.objects.all()
     
-    # Get naive bayes evaluation data
-    evalSVM = Evaluation.objects.filter(metode='SVM')
-    
-    # Ubah digit di belakang koma dan ubah menjadi persen (%)
-    for eval in evalSVM:
-        eval.test_size = round(eval.test_size, 1)
-        eval.train_size = round(eval.train_size, 1)
-        eval.accuracy = round(eval.accuracy, 2)
-        eval.precision = round(eval.precision, 2)
-        eval.recall = round(eval.recall, 2)
-        eval.f1_score = round(eval.f1_score, 2)
-        
-        eval.test_size = f"{eval.test_size * 100}%"
-        eval.train_size = f"{eval.train_size * 100}%"
-        eval.accuracy = f"{eval.accuracy * 100}%"
-        eval.precision = f"{eval.precision * 100}%"
-        eval.recall = f"{eval.recall * 100}%"
-        eval.f1_score = f"{eval.f1_score * 100}%"
-        
-    empty = True
-    if len(evalSVM) > 0:
-        empty = False
+    if len(train_data) == 0 or len(test_data) == 0:
+        data = 0 
+    else:
+        data = 1
         
     context = {
-        'empty': empty,
-        'evaluations': evalSVM,
+        'title': 'Pemodelan SVM',
+        'data': data,
     }
     
-    if len(train_data) == 0 or len(test_data) == 0:
-        context['data'] = 0
-
-    context['title'] = 'Pemodelan SVM'
     return render(request, "svm/index.html", context)
 
 
@@ -187,6 +165,7 @@ def train_and_evaluate_nb(request):
         precision=precision,
         recall=recall,
         f1_score=f1,
+        csv_path=csv_path,
         confusion_matrix_path=cm_path,
         model_path=model_path,
         vectorizer_path=vectorizer_path,
@@ -194,6 +173,8 @@ def train_and_evaluate_nb(request):
     evaluation.save()
     
     latest_evaluation = Evaluation.objects.latest("created_at")
+    
+    csv_path = latest_evaluation.csv_path
     cm_path = latest_evaluation.confusion_matrix_path
     cm_path = cm_path.replace(current_dir, "").replace("\\", "/").replace("/static/", "")
     
@@ -305,6 +286,33 @@ def train_and_evaluate_svm(request):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     folder_path = os.path.join(current_dir, "static/svm/", now)
     os.makedirs(folder_path)
+    
+    # change array to predicted_label to list
+    predicted_label = y_pred
+    predicted_label = predicted_label.tolist()
+    
+    # change 1 to 'Positif' and 0 to 'Negatif'
+    for i in range(len(predicted_label)):
+        if predicted_label[i] == 1:
+            predicted_label[i] = 'Positif'
+        else:
+            predicted_label[i] = 'Negatif'
+    
+    # change array to actual_label to list
+    actual_label = y_test
+    for i in range(len(actual_label)):
+        if actual_label[i] == 1:
+            actual_label[i] = 'Positif'
+        else:
+            actual_label[i] = 'Negatif'
+    
+    # export predicted_test_data to csv
+    csv_path = os.path.join(folder_path, "predicted_test_data.csv")
+    with open(csv_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['text', 'actual_label', 'predicted_label'])
+        for i in range(len(X_test)):
+            writer.writerow([X_test[i], actual_label[i], predicted_label[i]])
 
     # Save confusion matrix to file
     cm_path = os.path.join(folder_path, "confusion_matrix.png")
@@ -327,6 +335,7 @@ def train_and_evaluate_svm(request):
         precision=precision,
         recall=recall,
         f1_score=f1,
+        csv_path=csv_path,
         confusion_matrix_path=cm_path,
         model_path=model_path,
         vectorizer_path=vectorizer_path,
@@ -334,6 +343,7 @@ def train_and_evaluate_svm(request):
     evaluation.save()
 
     latest_evaluation = Evaluation.objects.latest("created_at")
+    csv_path = latest_evaluation.csv_path
     cm_path = latest_evaluation.confusion_matrix_path
     cm_path = cm_path.replace(current_dir, "").replace("\\", "/").replace("/static/", "")
     
@@ -353,31 +363,12 @@ def train_and_evaluate_svm(request):
     latest_evaluation.recall = f"{latest_evaluation.recall * 100}%"
     latest_evaluation.f1_score = f"{latest_evaluation.f1_score * 100}%"
     
-    evalSVM = Evaluation.objects.filter(metode='SVM')
-    # Ubah digit di belakang koma dan ubah menjadi persen (%)
-    for eval in evalSVM:
-        eval.test_size = round(eval.test_size, 1)
-        eval.train_size = round(eval.train_size, 1)
-        eval.accuracy = round(eval.accuracy, 2)
-        eval.precision = round(eval.precision, 2)
-        eval.recall = round(eval.recall, 2)
-        eval.f1_score = round(eval.f1_score, 2)
-        
-        eval.test_size = f"{eval.test_size * 100}%"
-        eval.train_size = f"{eval.train_size * 100}%"
-        eval.accuracy = f"{eval.accuracy * 100}%"
-        eval.precision = f"{eval.precision * 100}%"
-        eval.recall = f"{eval.recall * 100}%"
-        eval.f1_score = f"{eval.f1_score * 100}%"
-        
-    empty = True
-    if len(evalSVM) > 0:
-        empty = False
+    df = pd.read_csv(csv_path)
+    # change df to queryset
+    df = df.to_dict('records')
         
     context = {
         'title': 'Pemodelan Naive Bayes',
-        'empty': empty,
-        'evaluations': evalSVM,
         'isTrue': True,
         'metode': latest_evaluation.metode,
         'test_size': latest_evaluation.test_size,
@@ -388,6 +379,7 @@ def train_and_evaluate_svm(request):
         "f1_score": latest_evaluation.f1_score,
         "created_at": latest_evaluation.created_at,
         "confusion_matrix": cm_path,
+        'df': df,
     }
 
     return render(request, "svm/index.html", context)
