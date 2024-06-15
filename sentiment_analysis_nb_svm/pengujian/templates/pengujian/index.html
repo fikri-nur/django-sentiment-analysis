@@ -15,7 +15,10 @@
                     <select class="form-control" id="modelSelect" name="model_id" required>
                         <option value="" selected disabled>Select a model</option>
                         {% for evaluation in evaluations %}
-                            <option value="{{ evaluation.id }}">{{ evaluation.metode }} | Latih: {{ evaluation.train_size }} | Uji: {{ evaluation.test_size }} | A: {{ evaluation.accuracy|floatformat:2 }} | P: {{ evaluation.precision|floatformat:2 }} | R: {{ evaluation.recall|floatformat:2 }} | F1: {{ evaluation.f1_score|floatformat:2 }}</option>
+                            <option value="{{ evaluation.id }}">{{ evaluation.metode }} | Data Latih: {{ evaluation.train_size }}% 
+                            | Data Uji: {{ evaluation.test_size }}% | Accuracy: {{ evaluation.accuracy }}% 
+                            | Precision: {{ evaluation.precision }}% | Recall: {{ evaluation.recall }}% 
+                            | F1-Score: {{ evaluation.f1_score }}%</option>
                         {% endfor %}
                     </select>
                     <div class="form-group">
@@ -33,7 +36,7 @@
                 </tr>
                 <tr>
                     <td class="text-start">Model:</td>
-                    <td class="text-center"><strong class="text-primary">{{ model.metode }} | Latih: {{ model.train_size }} | Uji: {{ model.test_size }} | Accuracy: {{ model.accuracy|floatformat:2 }} | Precision: {{ model.precision|floatformat:2 }} | Recall: {{ model.recall|floatformat:2 }} | F1-Score: {{ model.f1_score|floatformat:2 }}</strong></td>
+                    <td class="text-center"><strong class="text-primary">{{ model.metode }} | Data Latih: {{ model.train_size }}% | Data Uji: {{ model.test_size }}% | Accuracy: {{ model.accuracy }}% | Precision: {{ model.precision }}% | Recall: {{ model.recall }}% | F1-Score: {{ model.f1_score }}%</strong></td>
                 </tr>
                 <tr>
                     <td class="text-start">Text:</td>
