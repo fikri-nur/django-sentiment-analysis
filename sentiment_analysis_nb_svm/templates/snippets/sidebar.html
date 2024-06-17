@@ -91,13 +91,13 @@
     <li class="nav-item {% if request.resolver_match.view_name == 'evaluasi:index_view' or request.resolver_match.view_name == 'evaluasi:detail_view' %}active{% endif %}">
         <a class="nav-link" href="{% url 'evaluasi:index_view' %}">
             <i class="fas fa-fw fa-solid fa-magnifying-glass-chart"></i>
-            <span>Evaluasi</span></a>
+            <span>Evaluasi Kinerja</span></a>
     </li>
 
     <li class="nav-item {% if request.resolver_match.view_name == 'pengujian:index_view' %}active{% endif %}">
         <a class="nav-link" href="{% url 'pengujian:index_view' %}">
             <i class="fas fa-fw fa-solid fa-magnifying-glass"></i>
-            <span>Prediksi Kalimat</span></a>
+            <span>Prediksi Sentimen Kalimat</span></a>
     </li>
 
     {% comment %} <li class="nav-item">

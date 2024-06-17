@@ -86,7 +86,7 @@ def index(request):
         context = {
             "title": "Dashboard",
             "countEveryLabel": [
-                ["Positif", positif, "success"],
+                ["Positif", positif, "primary"],
                 ["Negatif", negatif, "danger"],
             ],
             "countEverySentiment": countEverySentiment,
