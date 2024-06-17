@@ -76,9 +76,17 @@ def clear_all_data(request):
                     shutil.rmtree(file_path)
             except Exception as e:
                 print(f'Failed to delete {file_path}. Reason: {e}')
-                
-    # Jika tabel evaluation kosong, hapus file yang tersimpan dalam folder pemodelan/static/naivebayes dan pemodelan/static/svm
+    
     if Evaluation.objects.count() == 0:
+        csv_test_data = "D:\\Kuliah\\Semester 8\\Sistem\\python\\sentiment_analysis_nb_svm\\data\\static\\csv\\test_data_info.csv"
+        csv_test_data = csv_test_data.replace("D:\\Kuliah\\Semester 8\\Sistem\\python\\sentiment_analysis_nb_svm\\data\\", "data/")
+        try:
+            os.unlink(csv_test_data)
+        except Exception as e:
+            print(f'Failed to delete {csv_test_data}. Reason: {e}')
+            
+    # Jika tabel evaluation kosong, hapus file yang tersimpan dalam folder pemodelan/static/naivebayes dan pemodelan/static/svm
+    if Evaluation.objects.count() == 0:            
         folder = 'pemodelan/static/naivebayes'
         for filename in os.listdir(folder):
             file_path = os.path.join(folder, filename)
