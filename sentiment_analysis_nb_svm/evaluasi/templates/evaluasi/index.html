@@ -88,7 +88,7 @@
     <div class="col-12">
         <div class="card shadow mb-4">
             <div class="card-body">
-                <canvas id="myChart" width="400" height="150"></canvas>
+                <canvas id="evalChart" width="400" height="150"></canvas>
             </div>
         </div>
     </div>
@@ -132,7 +132,7 @@ $(document).ready(function() {
             {% endif %}
         {% endfor %}
 
-        var ctx = document.getElementById('myChart').getContext('2d');
+        var ctx = document.getElementById('evalChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
             data: {
