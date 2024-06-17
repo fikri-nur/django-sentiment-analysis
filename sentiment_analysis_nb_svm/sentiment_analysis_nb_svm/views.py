@@ -1,5 +1,6 @@
 import json
 import os
+import pandas as pd
 from django.shortcuts import render, redirect
 from django.conf import settings
 
@@ -14,6 +15,7 @@ from wordcloud import WordCloud
 from . import forms
 from dataset.models import Dataset
 from preprocessing.models import Preprocessing, WordCloud as WordCloudPath
+from evaluasi.models import Evaluation
 
 def generate_word_cloud(text, output_path):
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
@@ -83,6 +85,50 @@ def index(request):
         check_wordcloud = None
         if positive_wordcloud_url == 'img/default_wordcloud.png' or negative_wordcloud_url == 'img/default_wordcloud.png':
             check_wordcloud = True
+        
+        evalDatas = Evaluation.objects.all()
+    
+        empty = True
+        if len(evalDatas) > 0:
+            empty = False
+            
+        sentiment_counts = []
+        for eval in evalDatas:
+            eval.test_size = round(eval.test_size, 1)
+            eval.train_size = round(eval.train_size, 1)
+            
+            eval.test_size = f"{eval.test_size * 100:.1f}".rstrip('0').rstrip('.')
+            eval.train_size = f"{eval.train_size * 100:.1f}".rstrip('0').rstrip('.')
+            # get csv data fro each evaluation
+            csv = pd.read_csv(eval.csv_path)
+            # Count positive and negative sentiment in predicted_label column
+            count_positif = (csv['predicted_label'] == 'Positif').sum()
+            count_negatif = (csv['predicted_label'] == 'Negatif').sum()
+            # append the count to sentiment_counts
+            sentiment_counts.append({
+                'metode': eval.metode,
+                'train_size': eval.train_size,
+                'test_size': eval.test_size,
+                'count_positif': count_positif,
+                'count_negatif': count_negatif,
+            })
+        
+        
+        if os.path.exists("D:\\Kuliah\\Semester 8\\Sistem\\python\\sentiment_analysis_nb_svm\\data\\static\\csv\\test_data_info.csv"):
+            csv_path = "D:\\Kuliah\\Semester 8\\Sistem\\python\\sentiment_analysis_nb_svm\\data\\static\\csv\\test_data_info.csv"
+            manual_label = pd.read_csv(csv_path)
+            # remove update_at column
+            manual_label = manual_label.drop(columns=['updated_at'])
+            # append the manual_label to sentiment_counts
+            for i in range(len(manual_label)):
+                sentiment_counts.append({
+                    'metode': manual_label['metode'][i],
+                    'train_size': manual_label['train_size'][i],
+                    'test_size': manual_label['test_size'][i],
+                    'count_positif': manual_label['count_positif'][i],
+                    'count_negatif': manual_label['count_negatif'][i],
+                })
+        
         context = {
             "title": "Dashboard",
             "countEveryLabel": [
@@ -95,6 +141,8 @@ def index(request):
             "check_wordcloud": check_wordcloud,
             "positive_wordcloud_url": os.path.join('static', positive_wordcloud_url),
             "negative_wordcloud_url": os.path.join('static', negative_wordcloud_url),
+            'empty': empty,
+            'sentiments': sentiment_counts,
         }
 
         return render(request, "index.html", context)

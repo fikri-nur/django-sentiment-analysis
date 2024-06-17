@@ -35,27 +35,15 @@
 
 <!-- Content Row -->
 <div class="row">
-    <div class="col-xl-12 col-lg-12">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div
-                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Jumlah
-                    Sentimen (Total Data: <span id="totalData"></span>)</h6>
-            </div>
-            <div class="card-body">
-                {% if total == 0 %}
-                <div class="alert alert-warning" role="alert">
-                    Tidak ada data yang tersedia.
+    {% if not empty %}
+            <div class="col-xl-12 col-lg-12">
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <canvas id="resultChart" width="400" height="150"></canvas>
+                    </div>
                 </div>
-                {% else %}
-                <canvas id="myBarChart"></canvas>
-                <div id="chartData"
-                    data-sentiment="{{ countEverySentiment_json }}"></div>
-                {% endif %}
             </div>
-        </div>
-    </div>
+    {% endif %}
     <!-- Word Cloud Positif -->
     {% if check_wordcloud %}
     <div class="col-xl-12 col-lg-12">
@@ -119,9 +107,124 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script>
+$(document).ready(function() {
 
+    {% if sentiments %}
+        var labels = [];
+        var positifData = [];
+        var negatifData = [];
 
+        {% for data in sentiments %}
+            {% if data.metode == 'Manual' %}
+                labels.push(["{{ data.train_size }}:{{ data.test_size }}", "{{ data.metode }}"]);
+                positifData.push({{ data.count_positif }});
+                negatifData.push({{ data.count_negatif }});
+            {% endif %}
+        {% endfor %}
+
+        {% for data in sentiments %}
+            {% if data.metode == 'Naive Bayes' %}
+                labels.push(["{{ data.train_size }}:{{ data.test_size }}", "{{ data.metode }}"]);
+                positifData.push({{ data.count_positif }});
+                negatifData.push({{ data.count_negatif }});
+            {% endif %}
+        {% endfor %}
+
+        {% for data in sentiments %}
+            {% if data.metode == 'SVM' %}
+                labels.push(["{{ data.train_size }}:{{ data.test_size }}", "{{ data.metode }}"]);
+                positifData.push({{ data.count_positif }});
+                negatifData.push({{ data.count_negatif }});
+            {% endif %}
+        {% endfor %}
+
+        var ctx = document.getElementById('resultChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Positif',
+                        data: positifData,
+                        backgroundColor: '#4E73DF',
+                        borderColor: '#4E73DF',
+                        borderWidth: 1,
+                    },
+                    {
+                        label: 'Negatif',
+                        data: negatifData,
+                        backgroundColor: '#dc3545',
+                        borderColor: '#dc3545',
+                        borderWidth: 1
+                    },
+                ]
+            },
+            options: {
+                layout: {
+                    padding: {
+                        left: 25,
+                        right: 25,
+                        top: 10,
+                        bottom: 10
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 50,
+                        ticks: {
+                            stepSize: 10,
+                        },
+                        title: {
+                            display: true,
+                            text: 'Jumlah',  
+                            font: {
+                                size: 16
+                            },
+                            color: '#333'
+                        },
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        position: 'top',
+                        padding: {
+                            bottom: 40,
+                            },
+                        text: 'Grafik Hasil Analisis Sentimen Naive Bayes dan SVM',
+                        font: {
+                            size: 20
+                        },
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    datalabels: {
+                        display: true,
+                        align: 'end',
+                        anchor: 'end',
+                        clip: false,
+                        formatter: (value) => {
+                            return value;
+                        }
+                    }
+                },
+            },
+            plugins: [ChartDataLabels]
+        });
+    {% endif %}
+});
 </script>
-<script src="{% static 'js/chart/dashboard-chartbar.js' %}"></script>
 {% endblock %}
