@@ -13,7 +13,7 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item {% if request.resolver_match.url_name == 'home">
+    <li class="nav-item {% if request.resolver_match.view_name == 'index' %}active{% endif %}">
         <a class="nav-link" href="{% url 'index' %}">
             <i class="fas fa-fw fa-solid fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
@@ -28,72 +28,79 @@
     </div>
 
     <!-- Nav Item -->
-    <li class="nav-item {% if request.resolver_match.url_name == 'datasets_index">
+    <li class="nav-item {% if request.resolver_match.view_name == 'dataset:index' %}active{% endif %}">
         <a class="nav-link" href="{% url 'dataset:index' %}">
             <i class="fas fa-fw fa-solid fa-database"></i>
             <span>Data Tweet</span></a>
     </li>
     
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+    <li class="nav-item {% if request.resolver_match.namespace == 'preprocessing' %}active{% endif %}">
+        <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseTwo"
             aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-fw fa-solid fa-broom"></i>
             <span>Preprocessings</span>
         </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseTwo" class="collapse {% if request.resolver_match.namespace == 'preprocessing' %}show{% endif %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Menu:</h6>
-                <a class="collapse-item" href="{% url 'preprocessing:cleansing_view' %}">Cleansing</a>
-                <a class="collapse-item" href="{% url 'preprocessing:casefolding_view' %}">Case Folding</a>
-                <a class="collapse-item" href="{% url 'preprocessing:normalization_view' %}">Normalization</a>
-                <a class="collapse-item" href="{% url 'preprocessing:tokenization_view' %}">Tokenizing</a>
-                <a class="collapse-item" href="{% url 'preprocessing:stopword_view' %}">Stopword Removal</a>
-                <a class="collapse-item" href="{% url 'preprocessing:stemming_view' %}">Stemming</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'preprocessing:cleansing_view' %}active{% endif %}" href="{% url 'preprocessing:cleansing_view' %}">Cleansing</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'preprocessing:casefolding_view' %}active{% endif %}" href="{% url 'preprocessing:casefolding_view' %}">Case Folding</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'preprocessing:normalization_view' %}active{% endif %}" href="{% url 'preprocessing:normalization_view' %}">Normalization</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'preprocessing:tokenization_view' %}active{% endif %}" href="{% url 'preprocessing:tokenization_view' %}">Tokenizing</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'preprocessing:stopword_view' %}active{% endif %}" href="{% url 'preprocessing:stopword_view' %}">Stopword Removal</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'preprocessing:stemming_view' %}active{% endif %}" href="{% url 'preprocessing:stemming_view' %}">Stemming</a>
             </div>
         </div>
     </li>
+
+    
     <!-- Nav Item - Utilities Collapse Menu -->
-    <li class="nav-item">
+    <li class="nav-item {% if request.resolver_match.namespace == 'data' %}active{% endif %}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMenu"
             aria-expanded="true" aria-controls="collapseUtilities">
             <i class="fas fa-fw fa-solid fa-file-lines"></i>
             <span>Data</span>
         </a>
-        <div id="collapseMenu" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="collapseMenu" class="collapse {% if request.resolver_match.namespace == 'data' %}show{% endif %}" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Menu:</h6>
-                <a class="collapse-item" href="{% url 'data:index_view' %}">Bagi Data dan Pilih Model</a>
-                <a class="collapse-item" href="{% url 'data:indexTrain_view' %}">Data Latih</a>
-                <a class="collapse-item" href="{% url 'data:indexTest_view' %}">Data Uji</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'data:index_view' %}active{% endif %}" href="{% url 'data:index_view' %}">Bagi Data</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'data:indexTrain_view' %}active{% endif %}" href="{% url 'data:indexTrain_view' %}">Tabel Data Latih</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'data:indexTest_view' %}active{% endif %}" href="{% url 'data:indexTest_view' %}">Tabel Data Uji</a>
             </div>
         </div>
     </li>
 
     <!-- Nav Item - Utilities Collapse Menu -->
-    <li class="nav-item">
+    <li class="nav-item {% if request.resolver_match.namespace == 'pemodelan' %}active{% endif %}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
             aria-expanded="true" aria-controls="collapseUtilities">
             <i class="fas fa-fw fa-cog"></i></i>
             <span>Pemodelan</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="collapseUtilities" class="collapse {% if request.resolver_match.namespace == 'pemodelan' %}show{% endif %}" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Menu:</h6>
-                <a class="collapse-item" href="{% url 'pemodelan:naive_bayes_view' %}">Naive Bayes</a>
-                <a class="collapse-item" href="{% url 'pemodelan:svm_view' %}">Support Vector Machine</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'pemodelan:naive_bayes_view' or request.resolver_match.view_name == 'pemodelan:train_and_evaluate_nb' %}active{% endif %}" href="{% url 'pemodelan:naive_bayes_view' %}">Naive Bayes</a>
+                <a class="collapse-item {% if request.resolver_match.view_name == 'pemodelan:svm_view' or request.resolver_match.view_name == 'pemodelan:train_and_evaluate_svm' %}active{% endif %}" href="{% url 'pemodelan:svm_view' %}">Support Vector Machine</a>
             </div>
         </div>
     </li>
     <!-- Nav Item -->
-    <li class="nav-item">
+    <li class="nav-item {% if request.resolver_match.view_name == 'evaluasi:index_view' or request.resolver_match.view_name == 'evaluasi:detail_view' %}active{% endif %}">
         <a class="nav-link" href="{% url 'evaluasi:index_view' %}">
             <i class="fas fa-fw fa-solid fa-magnifying-glass-chart"></i>
             <span>Evaluasi</span></a>
     </li>
 
-    <!-- Nav Item - Dropdown -->
-    <li class="nav-item">
+    <li class="nav-item {% if request.resolver_match.view_name == 'pengujian:index_view' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'pengujian:index_view' %}">
+            <i class="fas fa-fw fa-solid fa-magnifying-glass"></i>
+            <span>Prediksi Kalimat</span></a>
+    </li>
+
+    {% comment %} <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDropdown"
             aria-expanded="true" aria-controls="collapseDropdown">
             <i class="fas fa-fw fa-solid fa-magnifying-glass"></i>
@@ -106,7 +113,7 @@
                 <a class="collapse-item" href="{% url 'pengujian:index_view' %}">Prediksi Sentimen</a>
             </div>
         </div>
-    </li>
+    </li> {% endcomment %}
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
