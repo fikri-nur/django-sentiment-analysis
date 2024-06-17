@@ -9,8 +9,10 @@ from preprocessing.models import Preprocessing
 
 import pandas as pd
 import numpy as np
+import os
+import csv
+
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
 # Create your views here.
 @login_required
 def indexView(request):
@@ -63,6 +65,46 @@ def split_data(test_size):
     
     TrainData.objects.bulk_create([TrainData(text=text, label=label) for text, label in zip(X_train, y_train)])
     TestData.objects.bulk_create([TestData(text=text, label=label) for text, label in zip(X_test, y_test)])
+    
+    # Menyimpan informasi data test ke dalam csv
+    # get the test data
+    test_data = TestData.objects.all()
+    # change to dataframe
+    df = pd.DataFrame({'label': [data.label for data in test_data]})
+    # change label to Positif and Negatif
+    df['label'] = np.where(df['label'] == 1, 'Positif', 'Negatif')
+    count_positif = (df['label'] == 'Positif').sum()
+    count_negatif = (df['label'] == 'Negatif').sum()
+    
+    # get the test_size and train_size
+    train_size = 1 - test_size
+    test_size = f"{test_size * 100}".rstrip('0').rstrip('.')
+    train_size = f"{train_size * 100}".rstrip('0').rstrip('.')
+    
+    # Get the current directory and the folder path
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(current_dir, "static/csv/")
+    
+    # check if the csv file is already created
+    csv_path = os.path.join(folder_path, "test_data_info.csv")
+    if not os.path.exists(csv_path):
+        with open(csv_path, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['metode', 'train_size', 'test_size', 'count_positif', 'count_negatif', 'updated_at'])
+            writer.writerow(['Manual', train_size, test_size, count_negatif, count_positif, pd.Timestamp.now()])
+    else:
+        # check if the test_size is already in the csv file, if yes, then update the count_positif and count_negatif
+        data_csv = pd.read_csv(csv_path)
+        if test_size in data_csv['test_size'].values:
+            data_csv.loc[data_csv['test_size'] == test_size, 'count_positif'] = count_positif
+            data_csv.loc[data_csv['test_size'] == test_size, 'count_negatif'] = count_negatif
+            data_csv.loc[data_csv['test_size'] == test_size, 'updated_at'] = pd.Timestamp.now()
+            data_csv.to_csv(csv_path, index=False)
+        else:
+            with open(csv_path, mode='a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Manual', train_size, test_size, count_negatif, count_positif, pd.Timestamp.now()])
+        
 
 
 def indexTrainView(request):
