@@ -78,8 +78,11 @@ def split_data(test_size):
     
     # get the test_size and train_size
     train_size = 1 - test_size
-    test_size = f"{test_size * 100}".rstrip('0').rstrip('.')
-    train_size = f"{train_size * 100}".rstrip('0').rstrip('.')
+    test_size = test_size * 100
+    train_size = train_size * 100
+    
+    test_size = int(test_size)
+    train_size = int(train_size)
     
     # Get the current directory and the folder path
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -91,7 +94,7 @@ def split_data(test_size):
         with open(csv_path, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['metode', 'train_size', 'test_size', 'count_positif', 'count_negatif', 'updated_at'])
-            writer.writerow(['Manual', train_size, test_size, count_negatif, count_positif, pd.Timestamp.now()])
+            writer.writerow(['Manual', train_size, test_size, count_positif, count_negatif, pd.Timestamp.now()])
     else:
         # check if the test_size is already in the csv file, if yes, then update the count_positif and count_negatif
         data_csv = pd.read_csv(csv_path)
@@ -103,7 +106,7 @@ def split_data(test_size):
         else:
             with open(csv_path, mode='a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow(['Manual', train_size, test_size, count_negatif, count_positif, pd.Timestamp.now()])
+                writer.writerow(['Manual', train_size, test_size, count_positif, count_negatif, pd.Timestamp.now()])
         
 
 
