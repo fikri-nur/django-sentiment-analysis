@@ -26,10 +26,10 @@ def generate_wordcloud(request):
     if request.user.is_authenticated:
         # Get texts for word cloud
         positive_texts = ' '.join(
-            Preprocessing.objects.filter(dataset__label="positif").values_list('stemmed_text', flat=True)
+            Preprocessing.objects.filter(dataset__label="positif").values_list('normalized_text', flat=True)
         )
         negative_texts = ' '.join(
-            Preprocessing.objects.filter(dataset__label="negatif").values_list('stemmed_text', flat=True)
+            Preprocessing.objects.filter(dataset__label="negatif").values_list('normalized_text', flat=True)
         )
 
         # Check and generate word cloud paths
